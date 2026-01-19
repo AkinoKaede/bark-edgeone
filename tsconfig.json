@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["ES2020"],
     "outDir": "./dist",
-    "rootDir": "./edge-functions",
+    "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -15,6 +15,9 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": ["src/**/*", "edge-functions/**/*"],
+  "include": [
+    "src/**/*", 
+    // "edge-functions/**/*"
+  ],
   "exclude": ["node_modules", "dist"]
 }
