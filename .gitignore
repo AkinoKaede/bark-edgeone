@@ -7,6 +7,6 @@ dist
 # Tencent Cloud EdgeOne
 .env
 .edgeone/*
-!.edgeone/project.json
+# !.edgeone/project.json
 .tef_dist/*
   
