@@ -9,7 +9,7 @@ A Bark push notification server implementation for EdgeOne Pages Edge Functions,
 ### Prerequisites
 
 - Node.js 18+
-- EdgeOne Pages account
+- Tencent Cloud account
 
 ### Installation
 

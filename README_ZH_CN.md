@@ -9,7 +9,7 @@
 ### 前置要求
 
 - Node.js 18+
-- EdgeOne Pages 账号
+- 腾讯云账号
 
 ### 安装
 
