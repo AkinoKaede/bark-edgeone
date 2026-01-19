@@ -36,12 +36,19 @@ ENABLE_APN_PROXY=false
 
 注意：Edge Functions 的 Fetch API 可能不支持 HTTP/2，禁用代理可能导致无法连接 APNs。
 
+**方式四：开启代理鉴权**
+
+```env
+APNS_PROXY_SECRET=your-shared-secret
+```
+
 ### 3. 测试连接
 
 ```bash
 # 使用 curl 测试代理
 curl -X POST https://your-domain.com/apns-proxy \
   -H "Content-Type: application/json" \
+  -H "x-apns-proxy-auth: your-shared-secret" \
   -d '{
     "device_token": "your-test-device-token",
     "payload": {
@@ -100,7 +107,8 @@ export async function sendNotification(
       proxyUrl,
       config.keyId,
       config.teamId,
-      config.privateKey
+      config.privateKey,
+      env?.APNS_PROXY_SECRET
     );
   }
 

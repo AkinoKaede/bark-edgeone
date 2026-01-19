@@ -72,10 +72,8 @@ function extractPathParams(params: any): Record<string, string> {
  * Routes: /:device_key/:title/:body or /:device_key/:title/:subtitle/:body
  */
 export function parseV1Route(route: string): PushParams | null {
-  // delete /api
-  if (route.startsWith('/api')) {
-    route = route.substring('/api'.length);
-  }
+  // delete /api from path
+  route = route.substring('/api'.length);
 
   // Remove leading/trailing slashes
   const parts = route.replace(/^\/+|\/+$/g, '').split('/');

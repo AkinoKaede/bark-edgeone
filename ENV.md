@@ -57,6 +57,24 @@ APNS_PROXY_URL=https://proxy-server.com/apns-proxy
 
 ---
 
+### APNS_PROXY_SECRET
+
+**描述**：APNs 代理访问密钥（Edge Functions 与 Node Functions 共用）
+
+**默认值**：空（不校验）
+
+**用途**：
+- Edge Functions 会在请求代理时添加 `x-apns-proxy-auth` 头
+- Node Functions 会验证该头（常数时间比较）
+- 该头不会转发给 Apple
+
+**示例**：
+```env
+APNS_PROXY_SECRET=your-shared-secret
+```
+
+---
+
 ## 工作流程
 
 ### 场景 1：默认配置（推荐）
@@ -122,6 +140,13 @@ APNS_USE_SANDBOX=false
 ```env
 # 单次批量推送的最大数量（-1 表示无限制）
 MAX_BATCH_PUSH_COUNT=-1
+```
+
+### 访问认证（可选）
+
+```env
+BARK_AUTH_USER=admin
+BARK_AUTH_PASSWORD=secret
 ```
 
 ---

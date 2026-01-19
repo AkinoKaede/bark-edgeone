@@ -9,6 +9,20 @@ import http2 from 'http2';
 
 const APNS_HOST = 'api.push.apple.com';
 const APNS_PORT = 443;
+const PROXY_AUTH_HEADER = 'x-apns-proxy-auth';
+
+function constantTimeEquals(a: string, b: string): boolean {
+  const maxLength = Math.max(a.length, b.length);
+  let result = a.length ^ b.length;
+
+  for (let i = 0; i < maxLength; i++) {
+    const aCode = i < a.length ? a.charCodeAt(i) : 0;
+    const bCode = i < b.length ? b.charCodeAt(i) : 0;
+    result |= aCode ^ bCode;
+  }
+
+  return result === 0;
+}
 
 /**
  * Forward request to APNs via HTTP/2
@@ -37,7 +51,7 @@ function forwardToAPNs(
     for (const [key, value] of Object.entries(headers)) {
       const lowerKey = key.toLowerCase();
       // Skip host header
-      if (lowerKey !== 'host') {
+      if (lowerKey !== 'host' && lowerKey !== PROXY_AUTH_HEADER) {
         http2Headers[lowerKey] = value;
       }
     }
@@ -86,6 +100,17 @@ export async function onRequest(context: any): Promise<Response> {
   const { request } = context;
 
   try {
+    const expectedSecret = context?.env?.APNS_PROXY_SECRET;
+    if (expectedSecret) {
+      const receivedSecret = request.headers.get(PROXY_AUTH_HEADER) || '';
+      if (!receivedSecret || !constantTimeEquals(receivedSecret, expectedSecret)) {
+        return new Response(JSON.stringify({ reason: 'Unauthorized' }), {
+          status: 401,
+          headers: { 'content-type': 'application/json' },
+        });
+      }
+    }
+
     // Get path (remove /apns-proxy prefix if exists)
     const url = new URL(request.url);
     let path = url.pathname;

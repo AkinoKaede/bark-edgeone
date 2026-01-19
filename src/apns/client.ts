@@ -54,7 +54,8 @@ export async function sendNotification(
         proxyUrl,
         config.keyId,
         config.teamId,
-        config.privateKey
+        config.privateKey,
+        env?.APNS_PROXY_SECRET
       );
     }
   }

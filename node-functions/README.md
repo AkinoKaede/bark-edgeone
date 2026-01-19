@@ -42,6 +42,7 @@ const response = await fetch('https://your-domain.com/apns-proxy/3/device/xxx', 
     'apns-push-type': 'alert',
     'apns-expiration': '0',
     'apns-priority': '10',
+    'x-apns-proxy-auth': 'your-shared-secret', // 可选
     'content-type': 'application/json',
   },
   body: JSON.stringify({
@@ -98,6 +99,19 @@ APNS_PROXY_URL=https://custom-domain.com/apns-proxy
 **禁用代理（直接连接 APNs）**：
 ```env
 ENABLE_APN_PROXY=false
+```
+
+### 3. 代理鉴权（可选）
+
+配置共享密钥后，Edge Functions 会自动添加 `x-apns-proxy-auth` 头，Node Functions 会验证该头并拒绝未授权请求（不转发给 Apple）。
+
+```env
+APNS_PROXY_SECRET=your-shared-secret
+```
+
+请求示例：
+```http
+x-apns-proxy-auth: your-shared-secret
 ```
 
 ### 4. 自动使用

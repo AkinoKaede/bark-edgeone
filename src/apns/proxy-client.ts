@@ -22,7 +22,8 @@ export async function sendViaProxy(
   proxyUrl: string,
   keyId: string,
   teamId: string,
-  privateKey: string
+  privateKey: string,
+  proxySecret?: string
 ): Promise<APNsResponse> {
   // Generate JWT token
   let token: string;
@@ -57,6 +58,10 @@ export async function sendViaProxy(
 
   if (notification.collapseId) {
     headers['apns-collapse-id'] = notification.collapseId;
+  }
+
+  if (proxySecret) {
+    headers['x-apns-proxy-auth'] = proxySecret;
   }
 
   try {

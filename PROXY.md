@@ -46,6 +46,16 @@ ENABLE_APN_PROXY=false
 - 可能因不支持 HTTP/2 而失败
 - 仅用于调试或特殊场景
 
+### 4. 代理鉴权（可选）
+
+```env
+APNS_PROXY_SECRET=your-shared-secret
+```
+
+**特点**：
+- Edge Functions 会附带 `x-apns-proxy-auth`
+- Node Functions 会验证该头（不转发给 Apple）
+
 ## 工作流程
 
 ```
@@ -81,6 +91,7 @@ ENABLE_APN_PROXY=false
 │      - authorization: bearer {jwt}                          │
 │      - apns-topic: me.fin.bark                              │
 │      - apns-push-type: alert                                │
+│      - x-apns-proxy-auth: {shared-secret} (可选)            │
 │      - content-type: application/json                       │
 │    Body: { aps: { alert: {...}, sound: "1107" } }          │
 └─────────────────────────────────────────────────────────────┘

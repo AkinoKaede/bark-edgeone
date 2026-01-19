@@ -11,11 +11,41 @@ import { DEFAULT_SOUND } from '../apns/config';
 import { getDeviceToken, deleteDeviceToken, saveDeviceToken } from '../utils/kv';
 import { success, failed, data, jsonResponse, errorResponse } from '../utils/response';
 import { parseParams, parseV1Route } from '../utils/parser';
+import { checkBasicAuth, unauthorizedResponse } from '../utils/auth';
 
 /**
  * Maximum number of batch pushes allowed (-1 means no limit)
  */
 const DEFAULT_MAX_BATCH_COUNT = -1;
+
+function buildApnsEnv(context: EventContext): Record<string, any> {
+  return {
+    ...context.env,
+    REQUEST_URL: context.request.url,
+    APNS_PROXY_SECRET: context.env?.APNS_PROXY_SECRET,
+  };
+}
+
+function ensureAuthorized(context: EventContext): Response | null {
+  if (!checkBasicAuth(context.request, context.env)) {
+    return unauthorizedResponse();
+  }
+
+  return null;
+}
+
+async function sendPushResponse(
+  params: Record<string, any>,
+  context: EventContext
+): Promise<Response> {
+  const result = await executePush(params, context);
+
+  if (result.code !== 200) {
+    return jsonResponse(failed(result.code, result.error || 'push failed'), result.code);
+  }
+
+  return jsonResponse(success());
+}
 
 /**
  * Build PushMessage from request parameters
@@ -132,10 +162,7 @@ async function executePush(
   msg.deviceToken = deviceToken;
 
   // Build env with request URL for auto-proxy detection
-  const env = {
-    ...context.env,
-    REQUEST_URL: context.request.url,
-  };
+  const env = buildApnsEnv(context);
 
   // Send push notification
   const result = await push(msg, env);
@@ -165,6 +192,11 @@ async function executePush(
  */
 export async function handlePushV2(context: EventContext): Promise<Response> {
   const { request, env } = context;
+
+  const authResponse = ensureAuthorized(context);
+  if (authResponse) {
+    return authResponse;
+  }
 
   // Parse all parameters
   let params: Record<string, any>;
@@ -196,13 +228,7 @@ export async function handlePushV2(context: EventContext): Promise<Response> {
 
   // Single push
   if (deviceKeys.length === 0) {
-    const result = await executePush(params, context);
-
-    if (result.code !== 200) {
-      return jsonResponse(failed(result.code, result.error || 'push failed'), result.code);
-    }
-
-    return jsonResponse(success());
+    return sendPushResponse(params, context);
   }
 
   // Batch push
@@ -241,7 +267,12 @@ export async function handlePushV1(
   context: EventContext,
   pathParams?: Record<string, string>
 ): Promise<Response> {
-  const { request, env } = context;
+  const { request } = context;
+
+  const authResponse = ensureAuthorized(context);
+  if (authResponse) {
+    return authResponse;
+  }
 
   // Start with path parameters
   const params: Record<string, any> = { ...pathParams };
@@ -284,14 +315,7 @@ export async function handlePushV1(
     }
   }
 
-  // Execute push
-  const result = await executePush(params, context);
-
-  if (result.code !== 200) {
-    return jsonResponse(failed(result.code, result.error || 'push failed'), result.code);
-  }
-
-  return jsonResponse(success());
+  return sendPushResponse(params, context);
 }
 
 /**
