@@ -87,9 +87,9 @@ npx edgeone pages env set MAX_BATCH_PUSH_COUNT "64"
 - 查看 [docs/zh-cn/configuration/env.md](./docs/zh-cn/configuration/env.md) 获取完整文档
 
 #### 步骤 6：部署
-
-- **GitHub 集成**：推送到您的仓库以触发自动部署
-- **直接上传**：点击**部署**并上传您构建的 `dist` 文件夹
+```bash
+npx edgeone pages deploy
+```
 
 #### 步骤 7：测试部署
 
@@ -177,9 +177,9 @@ APNS_PRIVATE_KEY = -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 3. 测试健康检查端点：
 
 ```bash
-curl https://your-domain.edgeone.app/api/ping
+curl https://your-domain.edgeone.app/api/healthz
 
-# 预期响应：{"message":"pong"}
+# 预期响应：ok
 ```
 
 ---
@@ -193,12 +193,6 @@ curl https://your-domain.edgeone.app/api/ping
 3. 输入您的域名
 4. 按照说明配置 DNS 记录
 5. 等待 SSL 证书配置完成
-
-#### 监控和日志
-
-- **实时日志**：导航到**日志**查看函数执行日志
-- **分析**：导航到**分析**查看请求指标
-- **告警**：配置错误和性能问题的告警
 
 ## 已知问题
 

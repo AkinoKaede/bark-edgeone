@@ -87,17 +87,17 @@ npx edgeone pages env set MAX_BATCH_PUSH_COUNT "64"
 - See [docs/en/configuration/env.md](./docs/en/configuration/env.md) for complete documentation
 
 #### Step 6: Deploy
-
-- **GitHub Integration**: Push to your repository to trigger automatic deployment
-- **Direct Upload**: Click **Deploy** and upload your built `dist` folder
+```bash
+npx edgeone pages deploy
+```
 
 #### Step 7: Test Your Deployment
 
 ```bash
 # Health check
-curl https://your-domain.edgeone.app/api/ping
+curl https://your-domain.edgeone.app/api/healthz
 
-# Expected response: {"message":"pong"}
+# Expected response: ok
 ```
 
 ---
@@ -193,12 +193,6 @@ curl https://your-domain.edgeone.app/api/ping
 3. Enter your domain name
 4. Configure DNS records as instructed
 5. Wait for SSL certificate provisioning
-
-#### Monitoring and Logs
-
-- **Real-time Logs**: Navigate to **Logs** to view function execution logs
-- **Analytics**: Navigate to **Analytics** to view request metrics
-- **Alerts**: Configure alerts for errors and performance issues
 
 ## Known Issues
 
