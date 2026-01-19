@@ -1,17 +1,21 @@
 # Bark EdgeOne
 
-[English Documentation](./README.md)
+[English](./README.md)
 
 基于 EdgeOne Pages Edge Functions 的 Bark 推送通知服务器实现，可在全球边缘节点上分布式部署推送通知服务。
 
-## 快速开始
+## 部署步骤
 
-### 前置要求
+选择您喜欢的部署方式：
+
+### 方式 1：命令行部署（推荐）
+
+#### 前置要求
 
 - Node.js 18+
-- 腾讯云账号
+- Git
 
-### 安装
+#### 步骤 1: 克隆仓库并安装依赖
 
 ```bash
 # 克隆仓库
@@ -22,13 +26,7 @@ cd bark-edgeone
 npm install
 ```
 
-## 部署步骤
-
-选择您喜欢的部署方式：
-
-### 方式 1：命令行部署（推荐）
-
-#### 步骤 1：登录 EdgeOne
+#### 步骤 2：登录 EdgeOne
 
 ```bash
 # 登录到您的 EdgeOne 账号
@@ -37,7 +35,7 @@ npx edgeone login
 
 这将打开浏览器窗口进行身份验证。
 
-#### 步骤 2：链接项目
+#### 步骤 3：链接项目
 
 ```bash
 # 链接到现有项目或创建新项目
@@ -46,7 +44,7 @@ npx edgeone link
 
 输入您的项目名称。如果项目不存在，系统会提示您创建。
 
-#### 步骤 3：创建和绑定 KV 命名空间
+#### 步骤 4：创建和绑定 KV 命名空间
 
 KV 命名空间必须通过网页控制台配置：
 
@@ -58,7 +56,7 @@ KV 命名空间必须通过网页控制台配置：
 6. 选择 `bark-kv` 并设置绑定名称为 `KV_STORAGE`
 7. 保存绑定
 
-#### 步骤 4：配置环境变量
+#### 步骤 6：配置环境变量
 
 ```bash
 # 生成安全的代理密钥（强烈推荐）
@@ -86,18 +84,9 @@ npx edgeone pages env set MAX_BATCH_PUSH_COUNT "64"
 - APNs 凭据（APNS_TOPIC、APNS_KEY_ID 等）是可选的 - 大多数用户不需要它们
 - 查看 [docs/zh-cn/configuration/env.md](./docs/zh-cn/configuration/env.md) 获取完整文档
 
-#### 步骤 6：部署
+#### 步骤 7：部署
 ```bash
 npx edgeone pages deploy
-```
-
-#### 步骤 7：测试部署
-
-```bash
-# 健康检查
-curl https://your-domain.edgeone.cool/api/ping
-
-# 预期响应：{"message":"pong"}
 ```
 
 ---
@@ -170,10 +159,10 @@ APNS_PRIVATE_KEY = -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 
 推送到您 Fork 的仓库以触发自动部署。
 
-#### 步骤 7：测试部署
+## 测试部署
 
-1. 前往项目的**部署**页面
-2. 点击最新的部署以查看 URL
+1. 前往项目的**域名管理**页面
+2. 查看项目域名
 3. 测试健康检查端点：
 
 ```bash

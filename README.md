@@ -1,17 +1,21 @@
 # Bark EdgeOne
 
-[简体中文](./README_ZH_CN.md)
+[中文（中国）](./README_ZH_CN.md)
 
 A Bark push notification server implementation for EdgeOne Pages Edge Functions, enabling distributed push notification delivery on edge nodes worldwide.
 
-## Quick Start
+## Deployment
 
-### Prerequisites
+Choose your preferred deployment method:
+
+### Method 1: Command Line Deployment (Recommended)
+
+#### Prerequisites
 
 - Node.js 18+
-- Tencent Cloud account
+- Git
 
-### Installation
+#### Step 1: Clone the Repository and Install Dependencies
 
 ```bash
 # Clone the repository
@@ -22,13 +26,7 @@ cd bark-edgeone
 npm install
 ```
 
-## Deployment
-
-Choose your preferred deployment method:
-
-### Method 1: Command Line Deployment (Recommended)
-
-#### Step 1: Login to EdgeOne
+#### Step 2: Login to EdgeOne
 
 ```bash
 # Login to your EdgeOne account
@@ -37,7 +35,7 @@ npx edgeone login
 
 This will open a browser window for authentication.
 
-#### Step 2: Link Project
+#### Step 3: Link Project
 
 ```bash
 # Link to existing project or create new one
@@ -46,7 +44,7 @@ npx edgeone link
 
 Enter your project name. If the project doesn't exist, you'll be prompted to create it.
 
-#### Step 3: Create and Bind KV Namespace
+#### Step 4: Create and Bind KV Namespace
 
 KV namespace must be configured via the web dashboard:
 
@@ -58,7 +56,7 @@ KV namespace must be configured via the web dashboard:
 6. Select `bark-kv` and set binding name to `KV_STORAGE`
 7. Save the binding
 
-#### Step 4: Configure Environment Variables
+#### Step 6: Configure Environment Variables
 
 ```bash
 # Generate a secure proxy secret (HIGHLY RECOMMENDED)
@@ -86,18 +84,9 @@ npx edgeone pages env set MAX_BATCH_PUSH_COUNT "64"
 - APNs credentials (APNS_TOPIC, APNS_KEY_ID, etc.) are optional - most users don't need them
 - See [docs/en/configuration/env.md](./docs/en/configuration/env.md) for complete documentation
 
-#### Step 6: Deploy
+#### Step 7: Deploy
 ```bash
 npx edgeone pages deploy
-```
-
-#### Step 7: Test Your Deployment
-
-```bash
-# Health check
-curl https://your-domain.edgeone.cool/api/healthz
-
-# Expected response: ok
 ```
 
 ---
@@ -170,10 +159,10 @@ APNS_PRIVATE_KEY = -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 
 Push to your forked repository to trigger automatic deployment.
 
-#### Step 7: Test Your Deployment
+## Test Your Deployment
 
-1. Go to your project's **Deployments** page
-2. Click on the latest deployment to view the URL
+1. Go to your project's **Domain Management** page
+2. view your project's domain
 3. Test the health endpoint:
 
 ```bash
