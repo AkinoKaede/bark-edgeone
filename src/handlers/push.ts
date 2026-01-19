@@ -88,7 +88,7 @@ function isEmptyAlert(msg: PushMessage): boolean {
  */
 async function executePush(
   params: Record<string, any>,
-  env?: any
+  context: EventContext
 ): Promise<{ code: number; error?: string }> {
   // Build push message from params
   const msg = buildPushMessage(params);
@@ -130,6 +130,12 @@ async function executePush(
   }
 
   msg.deviceToken = deviceToken;
+
+  // Build env with request URL for auto-proxy detection
+  const env = {
+    ...context.env,
+    REQUEST_URL: context.request.url,
+  };
 
   // Send push notification
   const result = await push(msg, env);
@@ -190,7 +196,7 @@ export async function handlePushV2(context: EventContext): Promise<Response> {
 
   // Single push
   if (deviceKeys.length === 0) {
-    const result = await executePush(params, env);
+    const result = await executePush(params, context);
 
     if (result.code !== 200) {
       return jsonResponse(failed(result.code, result.error || 'push failed'), result.code);
@@ -210,7 +216,7 @@ export async function handlePushV2(context: EventContext): Promise<Response> {
   const results = await Promise.all(
     deviceKeys.map(async (deviceKey) => {
       const pushParams = { ...params, device_key: deviceKey };
-      const result = await executePush(pushParams, env);
+      const result = await executePush(pushParams, context);
 
       const item: Record<string, any> = {
         code: result.code,
@@ -279,7 +285,7 @@ export async function handlePushV1(
   }
 
   // Execute push
-  const result = await executePush(params, env);
+  const result = await executePush(params, context);
 
   if (result.code !== 200) {
     return jsonResponse(failed(result.code, result.error || 'push failed'), result.code);

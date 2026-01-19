@@ -1,5 +1,5 @@
-import type { EventContext } from '../src/types/common';
-import { countDevices } from '../src/utils/kv';
+import type { EventContext } from '../../src/types/common';
+import { countDevices } from '../../src/utils/kv';
 
 /**
  * Info endpoint - Server information

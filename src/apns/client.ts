@@ -10,6 +10,7 @@ import type { PushMessage } from '../types/common';
 import { getToken, clearTokenCache } from './jwt';
 import { getAPNsConfig, DEFAULT_SOUND } from './config';
 import { buildAlertPayload, buildSilentPayload } from './payload';
+import { sendViaProxy } from './proxy-client';
 
 /**
  * Push type for APNs
@@ -28,6 +29,37 @@ export async function sendNotification(
   env?: any
 ): Promise<APNsResponse> {
   const config = getAPNsConfig(env);
+
+  // Check if proxy is enabled (default: enabled)
+  const enableProxy = env?.ENABLE_APN_PROXY !== '0' && env?.ENABLE_APN_PROXY !== 'false';
+
+  if (enableProxy) {
+    // Get proxy URL from env or auto-generate from current domain
+    let proxyUrl = env?.APNS_PROXY_URL;
+
+    if (!proxyUrl && env?.REQUEST_URL) {
+      // Auto-generate proxy URL from request URL
+      try {
+        const requestUrl = new URL(env.REQUEST_URL);
+        proxyUrl = `${requestUrl.protocol}//${requestUrl.host}/apns-proxy`;
+      } catch (error) {
+        console.warn('Failed to auto-generate proxy URL:', error);
+      }
+    }
+
+    if (proxyUrl) {
+      // Use Node Functions proxy for HTTP/2 support
+      return await sendViaProxy(
+        notification,
+        proxyUrl,
+        config.keyId,
+        config.teamId,
+        config.privateKey
+      );
+    }
+  }
+
+  // Use direct Fetch API (may not work with HTTP/2 on Edge Functions)
 
   // Build request URL
   const url = `${config.host}/3/device/${notification.deviceToken}`;

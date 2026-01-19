@@ -1,6 +1,6 @@
-import type { EventContext } from '../../src/types/common';
-import { handleRegister } from '../../src/handlers/register';
-import { jsonResponse, failed } from '../../src/utils/response';
+import type { EventContext } from '../../../src/types/common';
+import { handleRegister } from '../../../src/handlers/register';
+import { jsonResponse, failed } from '../../../src/utils/response';
 
 /**
  * Register endpoint

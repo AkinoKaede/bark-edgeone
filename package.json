@@ -13,8 +13,7 @@
   ],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.10.0",
     "edgeone": "^1.2.22",

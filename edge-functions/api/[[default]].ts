@@ -12,9 +12,9 @@
  * will be handled by their dedicated handlers first.
  */
 
-import { handleV1Route } from '../src/handlers/push';
-import { errorResponse } from '../src/utils/response';
-import type { EventContext } from '../src/types/common';
+import { handleV1Route } from '../../src/handlers/push';
+import { errorResponse } from '../../src/utils/response';
+import type { EventContext } from '../../src/types/common';
 
 /**
  * Reserved paths that should not be handled by this catch-all

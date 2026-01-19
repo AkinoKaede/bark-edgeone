@@ -16,8 +16,9 @@
     "sourceMap": true
   },
   "include": [
-    "src/**/*", 
-    "edge-functions/**/*"
+    "src/**/*",
+    "edge-functions/**/*",
+    "node-functions/**/*"
   ],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,5 +1,5 @@
-import type { EventContext } from '../../src/types/common';
-import { handleRegisterCheck } from '../../src/handlers/register';
+import type { EventContext } from '../../../src/types/common';
+import { handleRegisterCheck } from '../../../src/handlers/register';
 
 /**
  * Check device registration

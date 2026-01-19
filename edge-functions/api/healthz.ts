@@ -1,4 +1,4 @@
-import type { EventContext } from '../src/types/common';
+import type { EventContext } from '../../src/types/common';
 
 /**
  * Healthz endpoint - Health check (Kubernetes style)

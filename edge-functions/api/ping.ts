@@ -1,5 +1,5 @@
-import type { EventContext } from '../src/types/common';
-import { success, jsonResponse } from '../src/utils/response';
+import type { EventContext } from '../../src/types/common';
+import { success, jsonResponse } from '../../src/utils/response';
 
 /**
  * Ping endpoint - Simple health check

@@ -9,8 +9,8 @@
  * - Batch push via device_keys array
  */
 
-import { handlePushV2 } from '../src/handlers/push';
-import type { EventContext } from '../src/types/common';
+import { handlePushV2 } from '../../src/handlers/push';
+import type { EventContext } from '../../src/types/common';
 
 /**
  * Handle POST /push requests
