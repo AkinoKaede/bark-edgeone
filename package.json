@@ -1,7 +1,7 @@
 {
   "name": "bark-edgeone",
   "version": "0.1.0",
-  "description": "A Bark server implementation for EdgeOne Pages",
+  "description": "A Bark server implementation for EdgeOne Pages.",
   "scripts": {
     "build": "tsc",
     "lint": "eslint . --ext .ts",
@@ -14,9 +14,13 @@
     "type-check": "tsc --noEmit"
   },
   "keywords": [
+    "apns",
+    "apple",
     "bark",
     "edgeone",
-    "typescript"
+    "typescript",
+    "push-notifications",
+    "serverless"
   ],
   "author": "",
   "license": "Apache-2.0",
