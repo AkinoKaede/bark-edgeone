@@ -15,10 +15,6 @@
     "declarationMap": true,
     "sourceMap": true
   },
-  "include": [
-    "src/**/*",
-    "edge-functions/**/*",
-    "node-functions/**/*"
-  ],
+  "include": ["src/**/*", "edge-functions/**/*", "node-functions/**/*"],
   "exclude": ["node_modules", "dist"]
 }

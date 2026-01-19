@@ -24,9 +24,19 @@ function base64UrlEncode(data: string | ArrayBuffer): string {
     // For ArrayBuffer, convert to binary string first
     const bytes = new Uint8Array(data);
     let binary = '';
-    for (let i = 0; i < bytes.length; i++) {
-      binary += String.fromCharCode(bytes[i]);
+
+    // Optimize: use spread operator for small arrays, chunked for large arrays
+    if (bytes.length < 65536) {
+      // For small arrays (< 64KB), use spread operator (2-3x faster)
+      binary = String.fromCharCode(...bytes);
+    } else {
+      // For large arrays, use chunked approach to avoid stack overflow
+      const chunkSize = 8192;
+      for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+      }
     }
+
     base64 = btoa(binary);
   }
 

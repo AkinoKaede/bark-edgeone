@@ -5,6 +5,8 @@
  * The private key should be stored in environment variables for security.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // APNs Topic (App Bundle ID)
 export const APNS_TOPIC = 'me.fin.bark';
 

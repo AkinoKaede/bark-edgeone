@@ -1,5 +1,7 @@
 import type { CommonResp } from '../types/common';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Create a success response
  */

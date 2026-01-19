@@ -1,4 +1,8 @@
 import type { EventContext, PushParams, DeviceInfo } from '../types/common';
+import { safeDecodeURIComponent } from './string';
+import { logDebug } from './logger';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * Parse request parameters from multiple sources
@@ -23,7 +27,7 @@ export async function parseParams(context: EventContext): Promise<PushParams> {
       const body = await request.json();
       Object.assign(params, body);
     } catch (error) {
-      // Ignore parse errors, params will be empty
+      logDebug('parseParams', 'Failed to parse JSON body', { error }, context.env);
     }
   } else if (contentType.includes('application/x-www-form-urlencoded')) {
     // Parse form data
@@ -33,7 +37,7 @@ export async function parseParams(context: EventContext): Promise<PushParams> {
         params[key.toLowerCase()] = value;
       });
     } catch (error) {
-      // Ignore parse errors
+      logDebug('parseParams', 'Failed to parse form data', { error }, context.env);
     }
   }
 
@@ -55,12 +59,8 @@ function extractPathParams(params: any): Record<string, string> {
 
   for (const [key, value] of Object.entries(params)) {
     if (typeof value === 'string') {
-      try {
-        // URL decode the parameter
-        result[key.toLowerCase()] = decodeURIComponent(value);
-      } catch {
-        result[key.toLowerCase()] = value;
-      }
+      // URL decode the parameter using safe decoder
+      result[key.toLowerCase()] = safeDecodeURIComponent(value);
     }
   }
 
@@ -130,8 +130,10 @@ export async function parseDeviceInfo(request: Request): Promise<DeviceInfo> {
 
   // Fall back to query parameters (for GET /register legacy support)
   if (Object.keys(info).length === 0) {
-    const device_key = url.searchParams.get('device_key') || url.searchParams.get('key') || undefined;
-    const device_token = url.searchParams.get('device_token') || url.searchParams.get('devicetoken') || '';
+    const device_key =
+      url.searchParams.get('device_key') || url.searchParams.get('key') || undefined;
+    const device_token =
+      url.searchParams.get('device_token') || url.searchParams.get('devicetoken') || '';
     info = { device_key, device_token };
   }
 

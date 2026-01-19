@@ -45,7 +45,7 @@ export async function sendViaProxy(
 
   // Build headers
   const headers: Record<string, string> = {
-    'authorization': `bearer ${token}`,
+    authorization: `bearer ${token}`,
     'apns-topic': notification.topic,
     'apns-push-type': notification.pushType,
     'apns-expiration': String(notification.expiration || 0),

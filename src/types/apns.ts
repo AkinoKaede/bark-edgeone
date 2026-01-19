@@ -1,6 +1,9 @@
 /**
  * APNs APS payload structure
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export interface APNsAPS {
   alert?: {
     title?: string;

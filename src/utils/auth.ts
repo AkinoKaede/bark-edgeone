@@ -1,18 +1,20 @@
 import { failed } from './response';
 import { constantTimeEquals } from './crypto';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 const BASIC_PREFIX = 'Basic ';
 
 /**
  * Parse multi-user credentials from environment variable
  * Format: "user1:pass1;user2:pass2;user3:pass3"
- * 
+ *
  * @param credentialsString - Semicolon-separated credentials
  * @returns Map of username to password
  */
 function parseCredentials(credentialsString: string): Map<string, string> {
   const credentials = new Map<string, string>();
-  
+
   if (!credentialsString) {
     return credentials;
   }
@@ -38,10 +40,10 @@ function parseCredentials(credentialsString: string): Map<string, string> {
 
 /**
  * Check Basic Authentication with multi-user support
- * 
+ *
  * Uses AUTH_CREDENTIALS environment variable
  * Format: "user1:pass1;user2:pass2;user3:pass3"
- * 
+ *
  * @param request - HTTP request
  * @param env - Environment variables
  * @returns true if authenticated or auth disabled, false otherwise
@@ -80,7 +82,7 @@ export function checkBasicAuth(request: Request, env: any): boolean {
   // Check multi-user credentials
   const credentials = parseCredentials(multiUserCreds);
   const expectedPassword = credentials.get(username);
-  
+
   if (expectedPassword && constantTimeEquals(password, expectedPassword)) {
     return true;
   }

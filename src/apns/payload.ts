@@ -5,8 +5,11 @@
  * Follows the APNs payload format specification.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type { APNsPayload } from '../types/apns';
-import { DEFAULT_SOUND, PAYLOAD_MAXIMUM } from './config';
+import { PAYLOAD_MAXIMUM } from './config';
+import { normalizeSound } from '../utils/string';
 
 /**
  * Payload builder class with fluent interface
@@ -54,10 +57,7 @@ export class PayloadBuilder {
    * Automatically appends .caf extension if not present
    */
   sound(sound: string): this {
-    if (sound && !sound.endsWith('.caf')) {
-      sound = `${sound}.caf`;
-    }
-    this.payload.aps.sound = sound || `${DEFAULT_SOUND}.caf`;
+    this.payload.aps.sound = normalizeSound(sound);
     return this;
   }
 

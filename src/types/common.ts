@@ -1,3 +1,7 @@
+import type { Environment } from './environment';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Common response structure for all API endpoints
  */
@@ -79,6 +83,6 @@ export interface PushMessage {
 export interface EventContext {
   request: Request;
   params: any;
-  env: any;
+  env: Environment;
   waitUntil: (promise: Promise<any>) => void;
 }

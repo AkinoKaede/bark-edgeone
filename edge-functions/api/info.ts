@@ -1,6 +1,8 @@
 import type { EventContext } from '../../src/types/common';
 import { countDevices } from '../../src/utils/kv';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * Info endpoint - Server information
  * GET /info
@@ -13,7 +15,8 @@ import { countDevices } from '../../src/utils/kv';
  */
 export async function onRequest(context: EventContext): Promise<Response> {
   // Check if device counting is enabled via environment variable
-  const enableDeviceCount = context.env.ENABLE_DEVICE_COUNT === 'true' || context.env.ENABLE_DEVICE_COUNT === '1';
+  const enableDeviceCount =
+    context.env.ENABLE_DEVICE_COUNT === 'true' || context.env.ENABLE_DEVICE_COUNT === '1';
 
   const info: any = {
     version: 'v2.0.0',

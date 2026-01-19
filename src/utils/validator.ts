@@ -1,4 +1,5 @@
 import type { PushParams, DeviceInfo } from '../types/common';
+import { isEmpty, normalizeSound } from './string';
 
 /**
  * Validation result type
@@ -14,11 +15,11 @@ export interface ValidationResult {
  * - Must not exceed 128 characters
  */
 export function validateDeviceToken(token?: string): ValidationResult {
-  if (!token || token.trim() === '') {
+  if (isEmpty(token)) {
     return { valid: false, error: 'device token is empty' };
   }
 
-  if (token.length > 128) {
+  if (token!.length > 128) {
     return { valid: false, error: 'device token is too long (max 128 characters)' };
   }
 
@@ -74,13 +75,10 @@ export function normalizePushParams(params: PushParams): PushParams {
   const normalized: PushParams = { ...params };
 
   // Normalize sound parameter
-  if (normalized.sound && !normalized.sound.endsWith('.caf')) {
-    normalized.sound = `${normalized.sound}.caf`;
-  }
-
-  // Default sound if not specified
-  if (!normalized.sound) {
-    normalized.sound = '1107.caf';
+  if (normalized.sound) {
+    normalized.sound = normalizeSound(normalized.sound);
+  } else {
+    normalized.sound = normalizeSound('');
   }
 
   // Convert string numbers to actual numbers

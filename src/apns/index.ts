@@ -21,12 +21,7 @@ export {
 export { generateJWT, getToken, clearTokenCache } from './jwt';
 
 // Payload Builder
-export {
-  PayloadBuilder,
-  newPayload,
-  buildAlertPayload,
-  buildSilentPayload,
-} from './payload';
+export { PayloadBuilder, newPayload, buildAlertPayload, buildSilentPayload } from './payload';
 
 // Client
 export { sendNotification, push } from './client';

@@ -5,10 +5,10 @@ import type { EventContext } from '../../src/types/common';
  * GET /healthz
  *
  * Returns plain text "ok" for health check
- * 
+ *
  * Note: This endpoint does NOT require authentication
  */
-export async function onRequest(context: EventContext): Promise<Response> {
+export async function onRequest(_context: EventContext): Promise<Response> {
   return new Response('ok', {
     status: 200,
     headers: {

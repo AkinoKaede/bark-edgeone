@@ -9,7 +9,7 @@ import { jsonResponse, failed } from '../../../src/utils/response';
  *
  * Environment variables:
  * - ENABLE_REGISTER: Set to "false" or "0" to disable registration (default: enabled)
- * 
+ *
  * Note: This endpoint does NOT require authentication
  */
 
@@ -18,7 +18,8 @@ import { jsonResponse, failed } from '../../../src/utils/response';
  */
 export async function onRequestPost(context: EventContext): Promise<Response> {
   // Check if registration is enabled via environment variable (default: enabled)
-  const enableRegister = context.env.ENABLE_REGISTER !== 'false' && context.env.ENABLE_REGISTER !== '0';
+  const enableRegister =
+    context.env.ENABLE_REGISTER !== 'false' && context.env.ENABLE_REGISTER !== '0';
 
   if (!enableRegister) {
     return jsonResponse(failed(403, 'Registration is disabled'), 403);
@@ -39,7 +40,8 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
   }
 
   // Check if registration is enabled via environment variable (default: enabled)
-  const enableRegister = context.env.ENABLE_REGISTER !== 'false' && context.env.ENABLE_REGISTER !== '0';
+  const enableRegister =
+    context.env.ENABLE_REGISTER !== 'false' && context.env.ENABLE_REGISTER !== '0';
 
   if (!enableRegister) {
     return jsonResponse(failed(403, 'Registration is disabled'), 403);

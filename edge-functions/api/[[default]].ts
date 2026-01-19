@@ -10,7 +10,7 @@
  * This file uses [[default]] naming to catch all unmatched routes.
  * It has the lowest priority, so specific routes like /push, /register, etc.
  * will be handled by their dedicated handlers first.
- * 
+ *
  * Note: This endpoint REQUIRES authentication when enabled
  */
 
@@ -22,10 +22,7 @@ import { checkBasicAuth, unauthorizedResponse } from '../../src/utils/auth';
 /**
  * Reserved paths that should not be handled by this catch-all
  */
-const RESERVED_PATHS = [
-  '/favicon.ico',
-  '/robots.txt',
-];
+const RESERVED_PATHS = ['/favicon.ico', '/robots.txt'];
 
 /**
  * Check if path is reserved
@@ -33,8 +30,7 @@ const RESERVED_PATHS = [
 function isReservedPath(path: string): boolean {
   const normalizedPath = path.toLowerCase();
   return RESERVED_PATHS.some(
-    (reserved) =>
-      normalizedPath === reserved || normalizedPath.startsWith(`${reserved}/`)
+    (reserved) => normalizedPath === reserved || normalizedPath.startsWith(`${reserved}/`)
   );
 }
 

@@ -5,6 +5,8 @@
  * No business logic, just pure HTTP/2 transport.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import http2 from 'http2';
 import { constantTimeEquals } from '../../src/utils/crypto';
 

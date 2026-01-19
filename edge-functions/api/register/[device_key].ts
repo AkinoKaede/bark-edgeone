@@ -7,7 +7,7 @@ import { handleRegisterCheck } from '../../../src/handlers/register';
  *
  * This endpoint is always enabled (even when ENABLE_REGISTER=false)
  * It only checks if a device key exists, doesn't allow registration
- * 
+ *
  * Note: This endpoint does NOT require authentication
  */
 export async function onRequestGet(context: EventContext): Promise<Response> {

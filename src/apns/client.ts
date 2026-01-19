@@ -5,12 +5,16 @@
  * Uses the Fetch API which supports HTTP/2 in EdgeOne Edge Functions.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import type { APNsPayload, APNsResponse, APNsNotification } from '../types/apns';
 import type { PushMessage } from '../types/common';
 import { getToken, clearTokenCache } from './jwt';
 import { getAPNsConfig, DEFAULT_SOUND } from './config';
 import { buildAlertPayload, buildSilentPayload } from './payload';
 import { sendViaProxy } from './proxy-client';
+import { getErrorMessage } from '../utils/error';
+import { logWarn } from '../utils/logger';
 
 /**
  * Push type for APNs
@@ -43,7 +47,7 @@ export async function sendNotification(
         const requestUrl = new URL(env.REQUEST_URL);
         proxyUrl = `${requestUrl.protocol}//${requestUrl.host}/apns-proxy`;
       } catch (error) {
-        console.warn('Failed to auto-generate proxy URL:', error);
+        logWarn('sendNotification', 'Failed to auto-generate proxy URL', { error }, env);
       }
     }
 
@@ -89,7 +93,7 @@ export async function sendNotification(
   } catch (error) {
     return {
       statusCode: 500,
-      reason: error instanceof Error ? error.message : 'Failed to generate APNs token',
+      reason: getErrorMessage(error),
     };
   }
 
@@ -139,7 +143,7 @@ export async function sendNotification(
   } catch (error) {
     return {
       statusCode: 500,
-      reason: error instanceof Error ? error.message : 'Unknown error',
+      reason: getErrorMessage(error),
     };
   }
 }
@@ -166,10 +170,7 @@ function isEmptyAlert(title: string, subtitle: string, body: string): boolean {
  * @param env - Environment variables
  * @returns Status code and error (if any)
  */
-export async function push(
-  msg: PushMessage,
-  env?: any
-): Promise<{ code: number; error?: string }> {
+export async function push(msg: PushMessage, env?: any): Promise<{ code: number; error?: string }> {
   const config = getAPNsConfig(env);
 
   let payload: APNsPayload;
@@ -181,7 +182,8 @@ export async function push(
     pushType = 'background';
   } else {
     // Regular alert push
-    let { title, subtitle, body, sound } = msg;
+    const { title, subtitle } = msg;
+    let { body, sound } = msg;
 
     // For empty alerts, set a default body (required for APNs)
     if (isEmptyAlert(title, subtitle, body)) {

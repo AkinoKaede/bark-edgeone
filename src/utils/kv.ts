@@ -2,6 +2,8 @@
  * KV storage utilities and constants
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 /**
  * ListKey - Key item in list result
  */
@@ -39,10 +41,7 @@ declare const KV_STORAGE: {
    * @param key The key (max 512 bytes, alphanumeric + underscores)
    * @param value The value (max 25 MB)
    */
-  put(
-    key: string,
-    value: string | ArrayBuffer | ArrayBufferView | ReadableStream
-  ): Promise<void>;
+  put(key: string, value: string | ArrayBuffer | ArrayBufferView | ReadableStream): Promise<void>;
 
   /**
    * Delete key-value pair
@@ -135,7 +134,7 @@ export async function countDevices(): Promise<number> {
 
     // List all keys with device: prefix
     do {
-      let options : any = {
+      const options: any = {
         prefix: KV_PREFIXES.DEVICE,
         limit: 256,
       };
