@@ -277,7 +277,7 @@ Contributions are welcome! Please read [AGENTS.md](./AGENTS.md) for development 
 
 ## License
 
-ISC
+SPDX-License-Identifier: [Apache-2.0](./LICENSE)
 
 ## Acknowledgments
 

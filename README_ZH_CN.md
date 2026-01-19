@@ -271,7 +271,7 @@ bark-edgeone/
 
 ## 许可证
 
-ISC
+SPDX-License-Identifier: [Apache-2.0](./LICENSE)
 
 ## 致谢
 
