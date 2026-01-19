@@ -2,7 +2,7 @@
 
 ## APNs 代理配置
 
-### ENABLE_APN_PROXY
+### ENABLE_APNS_PROXY
 
 **描述**：是否启用 APNs HTTP/2 代理
 
@@ -19,10 +19,10 @@
 **示例**：
 ```env
 # 启用代理（默认，可以不设置）
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 
 # 禁用代理
-ENABLE_APN_PROXY=false
+ENABLE_APNS_PROXY=false
 ```
 
 ---
@@ -96,7 +96,7 @@ APNS_PROXY_SECRET=your-shared-secret
 环境变量：无
 
 1. 用户访问：https://bark.example.com/push
-2. ENABLE_APN_PROXY 默认为 true（启用代理）
+2. ENABLE_APNS_PROXY 默认为 true（启用代理）
 3. APNS_PROXY_URL 未设置，自动生成：https://bark.example.com/apns-proxy
 4. 请求转发到：https://bark.example.com/apns-proxy/3/device/xxx
 5. Node Functions 代理转发到 APNs
@@ -106,7 +106,7 @@ APNS_PROXY_SECRET=your-shared-secret
 
 ```
 环境变量：
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 APNS_PROXY_URL=https://apns.example.com/proxy
 
 1. 用户访问：https://bark.example.com/push
@@ -118,7 +118,7 @@ APNS_PROXY_URL=https://apns.example.com/proxy
 
 ```
 环境变量：
-ENABLE_APN_PROXY=false
+ENABLE_APNS_PROXY=false
 
 1. 用户访问：https://bark.example.com/push
 2. 直接使用 Fetch API 连接：https://api.push.apple.com/3/device/xxx
@@ -443,7 +443,7 @@ LOG_LEVEL=WARN
 # ============================================
 
 # 启用 APNs HTTP/2 代理（默认：true）
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 
 # APNs 代理 URL（默认：自动生成）
 # APNS_PROXY_URL=https://your-domain.com/apns-proxy
@@ -515,7 +515,7 @@ LOG_LEVEL=INFO
 APNS_PROXY_SECRET=<使用以下命令生成：openssl rand -hex 32>
 
 # APNs 代理（使用默认值）
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 # APNS_PROXY_URL 自动生成
 
 # 限制
@@ -545,7 +545,7 @@ LOG_LEVEL=INFO
 APNS_PROXY_SECRET=<使用以下命令生成：openssl rand -hex 32>
 
 # APNs 代理（使用默认值）
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 
 # 限制（测试时更宽松）
 MAX_BATCH_PUSH_COUNT=128
@@ -603,5 +603,5 @@ APNS_PROXY_URL=https://correct-domain.com/apns-proxy
 **解决**：启用代理
 
 ```env
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 ```

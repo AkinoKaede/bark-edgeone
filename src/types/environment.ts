@@ -11,7 +11,7 @@ export interface Environment {
   APNS_USE_SANDBOX?: string;
 
   // Proxy Configuration
-  ENABLE_APN_PROXY?: string;
+  ENABLE_APNS_PROXY?: string;
   APNS_PROXY_URL?: string;
   APNS_PROXY_SECRET?: string;
 

@@ -224,12 +224,6 @@ curl https://your-domain.edgeone.cool/api/healthz
   2. Provide redirect rules for backward compatibility
   3. Update documentation with new endpoints
 
-**Workaround for Testing**:
-```env
-# Disable proxy (may fail due to HTTP/2 requirement)
-ENABLE_APN_PROXY=false
-```
-
 ## Local Development
 
 ```bash

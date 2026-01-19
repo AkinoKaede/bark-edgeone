@@ -35,7 +35,7 @@ export async function sendNotification(
   const config = getAPNsConfig(env);
 
   // Check if proxy is enabled (default: enabled)
-  const enableProxy = env?.ENABLE_APN_PROXY !== '0' && env?.ENABLE_APN_PROXY !== 'false';
+  const enableProxy = env?.ENABLE_APNS_PROXY !== '0' && env?.ENABLE_APNS_PROXY !== 'false';
 
   if (enableProxy) {
     // Get proxy URL from env or auto-generate from current domain

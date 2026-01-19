@@ -2,7 +2,7 @@
 
 ## APNs Proxy Configuration
 
-### ENABLE_APN_PROXY
+### ENABLE_APNS_PROXY
 
 **Description**: Enable or disable APNs HTTP/2 proxy
 
@@ -19,10 +19,10 @@
 **Example**:
 ```env
 # Enable proxy (default, can be omitted)
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 
 # Disable proxy
-ENABLE_APN_PROXY=false
+ENABLE_APNS_PROXY=false
 ```
 
 ---
@@ -96,7 +96,7 @@ APNS_PROXY_SECRET=your-shared-secret
 Environment Variables: None
 
 1. User accesses: https://bark.example.com/push
-2. ENABLE_APN_PROXY defaults to true (proxy enabled)
+2. ENABLE_APNS_PROXY defaults to true (proxy enabled)
 3. APNS_PROXY_URL not set, auto-generated: https://bark.example.com/apns-proxy
 4. Request forwarded to: https://bark.example.com/apns-proxy/3/device/xxx
 5. Node Functions proxy forwards to APNs
@@ -106,7 +106,7 @@ Environment Variables: None
 
 ```
 Environment Variables:
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 APNS_PROXY_URL=https://apns.example.com/proxy
 
 1. User accesses: https://bark.example.com/push
@@ -118,7 +118,7 @@ APNS_PROXY_URL=https://apns.example.com/proxy
 
 ```
 Environment Variables:
-ENABLE_APN_PROXY=false
+ENABLE_APNS_PROXY=false
 
 1. User accesses: https://bark.example.com/push
 2. Direct connection using Fetch API: https://api.push.apple.com/3/device/xxx
@@ -443,7 +443,7 @@ LOG_LEVEL=WARN
 # ============================================
 
 # Enable APNs HTTP/2 proxy (default: true)
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 
 # APNs proxy URL (default: auto-generated)
 # APNS_PROXY_URL=https://your-domain.com/apns-proxy
@@ -515,7 +515,7 @@ LOG_LEVEL=INFO
 APNS_PROXY_SECRET=<generate using: openssl rand -hex 32>
 
 # APNs Proxy (use defaults)
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 # APNS_PROXY_URL is auto-generated
 
 # Limits
@@ -545,7 +545,7 @@ LOG_LEVEL=INFO
 APNS_PROXY_SECRET=<generate using: openssl rand -hex 32>
 
 # APNs Proxy (use defaults)
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 
 # Limits (more permissive for testing)
 MAX_BATCH_PUSH_COUNT=128
@@ -603,5 +603,5 @@ APNS_PROXY_URL=https://correct-domain.com/apns-proxy
 **Solution**: Enable proxy
 
 ```env
-ENABLE_APN_PROXY=true
+ENABLE_APNS_PROXY=true
 ```
