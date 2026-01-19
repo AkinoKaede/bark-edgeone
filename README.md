@@ -58,8 +58,9 @@ APNS_TEAM_ID=your-team-id
 APNS_TOPIC=me.fin.bark
 
 # Authentication (Optional)
-BARK_AUTH_USER=admin
-BARK_AUTH_PASSWORD=secret
+# Multi-user authentication
+# Format: username1:password1;username2:password2;username3:password3
+AUTH_CREDENTIALS=admin:admin123;user1:pass1;user2:pass2
 
 # Batch Push Limit (Optional)
 MAX_BATCH_PUSH_COUNT=100
@@ -202,6 +203,66 @@ GET /healthz
 # Server info
 GET /info
 ```
+
+## Authentication
+
+Bark EdgeOne supports HTTP Basic Authentication with multi-user support to protect your endpoints.
+
+### Configuration
+
+Set the `AUTH_CREDENTIALS` environment variable with semicolon-separated credentials:
+
+```env
+AUTH_CREDENTIALS=admin:admin123;user1:pass1;user2:pass2
+```
+
+**Format**: `username1:password1;username2:password2;username3:password3`
+
+### Protected Endpoints
+
+When authentication is enabled, the following endpoints require Basic Auth:
+- `/push` - Push notifications (V2 API)
+- `/:device_key/:title/:body` - V1 API routes
+
+### Auth-Free Endpoints
+
+The following endpoints do NOT require authentication (always accessible):
+- `/register` - Device registration
+- `/ping` - Health check
+- `/healthz` - Kubernetes-style health check
+- `/info` - Server information
+
+### Using Authentication
+
+```bash
+# Using curl with -u flag
+curl -u admin:admin123 -X POST https://your-domain.com/push \
+  -H "Content-Type: application/json" \
+  -d '{"device_key":"test","title":"Hello","body":"World"}'
+
+# Using Authorization header
+curl -X POST https://your-domain.com/push \
+  -H "Authorization: Basic YWRtaW46YWRtaW4xMjM=" \
+  -H "Content-Type: application/json" \
+  -d '{"device_key":"test","title":"Hello","body":"World"}'
+
+# V1 API with auth
+curl -u admin:admin123 https://your-domain.com/test-key/Hello/World
+
+# Auth-free endpoints (no credentials needed)
+curl https://your-domain.com/ping
+curl https://your-domain.com/register -d '{"device_token":"xxx"}'
+```
+
+### Security Features
+
+- **Constant-time comparison**: Prevents timing attacks on password validation
+- **Shared crypto utilities**: Both edge functions and node functions use the same secure comparison logic
+- **Multi-user support**: Multiple users can access the API with different credentials
+
+### Disabling Authentication
+
+To disable authentication, simply don't set the `AUTH_CREDENTIALS` environment variable. The server will allow all requests without authentication.
 
 ## Deployment
 

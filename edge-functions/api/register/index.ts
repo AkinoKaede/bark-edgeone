@@ -9,6 +9,8 @@ import { jsonResponse, failed } from '../../../src/utils/response';
  *
  * Environment variables:
  * - ENABLE_REGISTER: Set to "false" or "0" to disable registration (default: enabled)
+ * 
+ * Note: This endpoint does NOT require authentication
  */
 
 /**

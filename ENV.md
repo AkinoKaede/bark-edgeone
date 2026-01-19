@@ -145,9 +145,20 @@ MAX_BATCH_PUSH_COUNT=-1
 ### 访问认证（可选）
 
 ```env
-BARK_AUTH_USER=admin
-BARK_AUTH_PASSWORD=secret
+# 多用户认证（格式：用户名1:密码1;用户名2:密码2）
+AUTH_CREDENTIALS=admin:admin123;user1:pass1;user2:pass2
 ```
+
+**说明**：
+- 启用后，`/push` 和 V1 API 路由（如 `/:device_key/:title/:body`）需要 HTTP Basic Auth
+- 以下端点**不需要**认证（始终可访问）：
+  - `/register` - 设备注册
+  - `/ping` - 健康检查
+  - `/healthz` - Kubernetes 风格健康检查
+  - `/info` - 服务器信息
+- 支持多个用户，使用分号分隔
+- 格式：`username1:password1;username2:password2`
+- 不设置则不启用认证
 
 ---
 

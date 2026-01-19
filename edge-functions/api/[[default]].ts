@@ -10,11 +10,14 @@
  * This file uses [[default]] naming to catch all unmatched routes.
  * It has the lowest priority, so specific routes like /push, /register, etc.
  * will be handled by their dedicated handlers first.
+ * 
+ * Note: This endpoint REQUIRES authentication when enabled
  */
 
 import { handleV1Route } from '../../src/handlers/push';
 import { errorResponse } from '../../src/utils/response';
 import type { EventContext } from '../../src/types/common';
+import { checkBasicAuth, unauthorizedResponse } from '../../src/utils/auth';
 
 /**
  * Reserved paths that should not be handled by this catch-all
@@ -50,6 +53,11 @@ async function handleRequest(context: EventContext): Promise<Response> {
   // Skip root path
   if (path === '/' || path === '') {
     return errorResponse(404, 'not found');
+  }
+
+  // Check authentication
+  if (!checkBasicAuth(context.request, context.env)) {
+    return unauthorizedResponse();
   }
 
   // Handle V1 API routes

@@ -567,30 +567,81 @@ export function jsonResponse(resp: CommonResp, status?: number): Response {
 
 ### Phase 6: Authentication and Security
 
-#### 6.1 Basic Authentication (Optional)
+#### 6.1 Basic Authentication with Multi-User Support
 
 ```typescript
-// src/middleware/auth.ts
-export function checkAuth(request: Request, env: any): boolean {
-  const authUser = env.BARK_AUTH_USER;
-  const authPassword = env.BARK_AUTH_PASSWORD;
+// src/utils/auth.ts
+import { constantTimeEquals } from './crypto';
 
-  if (!authUser || !authPassword) {
+function parseCredentials(credentialsString: string): Map<string, string> {
+  const credentials = new Map<string, string>();
+  
+  if (!credentialsString) {
+    return credentials;
+  }
+
+  const pairs = credentialsString.split(';');
+  for (const pair of pairs) {
+    const trimmedPair = pair.trim();
+    if (!trimmedPair) continue;
+
+    const colonIndex = trimmedPair.indexOf(':');
+    if (colonIndex === -1) continue;
+
+    const username = trimmedPair.substring(0, colonIndex);
+    const password = trimmedPair.substring(colonIndex + 1);
+
+    if (username && password) {
+      credentials.set(username, password);
+    }
+  }
+
+  return credentials;
+}
+
+export function checkBasicAuth(request: Request, env: any): boolean {
+  const multiUserCreds = env?.AUTH_CREDENTIALS;
+
+  if (!multiUserCreds) {
     return true; // Auth disabled
   }
 
-  const authHeader = request.headers.get('Authorization');
+  const authHeader = request.headers.get('authorization');
   if (!authHeader || !authHeader.startsWith('Basic ')) {
     return false;
   }
 
-  const base64Credentials = authHeader.slice(6);
-  const credentials = atob(base64Credentials);
-  const [username, password] = credentials.split(':');
+  let decoded = '';
+  try {
+    decoded = atob(authHeader.slice(6));
+  } catch {
+    return false;
+  }
 
-  return username === authUser && password === authPassword;
+  const colonIndex = decoded.indexOf(':');
+  if (colonIndex === -1) {
+    return false;
+  }
+
+  const username = decoded.substring(0, colonIndex);
+  const password = decoded.substring(colonIndex + 1);
+
+  const credentials = parseCredentials(multiUserCreds);
+  const expectedPassword = credentials.get(username);
+  
+  return expectedPassword && constantTimeEquals(password, expectedPassword);
 }
 ```
+
+**Protected Endpoints (require authentication):**
+- `/push` - Push notifications (V2 API)
+- `/:device_key/:title/:body` - V1 API routes
+
+**Auth-Free Endpoints (no authentication required):**
+- `/register` - Device registration
+- `/ping` - Health check
+- `/healthz` - Kubernetes-style health check
+- `/info` - Server information
 
 #### 6.2 Rate Limiting
 
@@ -653,8 +704,8 @@ APNS_TEAM_ID=5U8LBRXG3A
 APNS_TOPIC=me.fin.bark
 
 # Authentication (optional)
-BARK_AUTH_USER=admin
-BARK_AUTH_PASSWORD=secret
+# Multi-user format: username1:password1;username2:password2
+AUTH_CREDENTIALS=admin:admin123;user1:pass1;user2:pass2
 
 # Batch Push Limit
 MAX_BATCH_PUSH_COUNT=100
