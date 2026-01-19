@@ -1,6 +1,31 @@
 import type { PushParams, DeviceInfo } from '../types/common';
 
 /**
+ * Validation result type
+ */
+export interface ValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+/**
+ * Validate device token
+ * - Must not be empty
+ * - Must not exceed 128 characters
+ */
+export function validateDeviceToken(token?: string): ValidationResult {
+  if (!token || token.trim() === '') {
+    return { valid: false, error: 'device token is empty' };
+  }
+
+  if (token.length > 128) {
+    return { valid: false, error: 'device token is too long (max 128 characters)' };
+  }
+
+  return { valid: true };
+}
+
+/**
  * Validate push parameters
  */
 export function validatePushParams(params: PushParams): { valid: boolean; error?: string } {

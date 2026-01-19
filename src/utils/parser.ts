@@ -1,4 +1,4 @@
-import type { EventContext, PushParams } from '../types/common';
+import type { EventContext, PushParams, DeviceInfo } from '../types/common';
 
 /**
  * Parse request parameters from multiple sources
@@ -99,4 +99,46 @@ export function parseV1Route(route: string): PushParams | null {
   }
 
   return params;
+}
+
+/**
+ * Parse device information from request
+ * Supports both POST JSON body and GET query parameters
+ * Handles backward compatibility field names
+ */
+export async function parseDeviceInfo(request: Request): Promise<DeviceInfo> {
+  const url = new URL(request.url);
+  let info: Partial<DeviceInfo> = {};
+
+  // Try JSON body first (for POST requests)
+  if (request.method === 'POST') {
+    try {
+      const contentType = request.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        const body = await request.json();
+        if (typeof body === 'object' && body !== null) {
+          info = body as Partial<DeviceInfo>;
+        }
+      }
+    } catch (e) {
+      // Not JSON or parsing failed, continue to query params
+    }
+  }
+
+  // Fall back to query parameters (for GET /register legacy support)
+  if (Object.keys(info).length === 0) {
+    const device_key = url.searchParams.get('device_key') || url.searchParams.get('key') || undefined;
+    const device_token = url.searchParams.get('device_token') || url.searchParams.get('devicetoken') || '';
+    info = { device_key, device_token };
+  }
+
+  // Normalize backward compatibility fields
+  if (!info.device_key && info.key) {
+    info.device_key = info.key;
+  }
+  if (!info.device_token && info.devicetoken) {
+    info.device_token = info.devicetoken;
+  }
+
+  return info as DeviceInfo;
 }
