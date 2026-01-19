@@ -177,9 +177,9 @@ Push to your forked repository to trigger automatic deployment.
 3. Test the health endpoint:
 
 ```bash
-curl https://your-domain.edgeone.app/api/ping
+curl https://your-domain.edgeone.app/api/healthz
 
-# Expected response: {"message":"pong"}
+# Expected response: ok
 ```
 
 ---
