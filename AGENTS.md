@@ -44,7 +44,8 @@ npx edgeone pages dev          # Start local dev server on http://localhost:8788
 
 ### Deploy to EdgeOne Pages
 ```bash
-npx edgeone pages deploy          # Start local dev server on http://localhost:8788
+npx edgeone pages deploy          # Start local dev server on http://localhost:8088
+```
 
 ## Project Structure
 
