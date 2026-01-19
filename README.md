@@ -24,78 +24,181 @@ npm install
 
 ## Deployment
 
-### Step 1: Configure Environment Variables
+Choose your preferred deployment method:
 
-You can set environment variables using the EdgeOne CLI or the dashboard.
+### Method 1: Command Line Deployment (Recommended)
 
-#### Using EdgeOne CLI (Recommended)
+#### Step 1: Login to EdgeOne
 
 ```bash
-# Generate a secure proxy secret
+# Login to your EdgeOne account
+npx edgeone login
+```
+
+This will open a browser window for authentication.
+
+#### Step 2: Link Project
+
+```bash
+# Link to existing project or create new one
+npx edgeone link
+```
+
+Enter your project name. If the project doesn't exist, you'll be prompted to create it.
+
+#### Step 3: Create and Bind KV Namespace
+
+KV namespace must be configured via the web dashboard:
+
+1. Go to **EdgeOne** → **Service Overview** (default page)
+2. Navigate to **KV Storage** → **Create Namespace**
+3. Name it `bark-kv` (or any name you prefer)
+4. Go to **EdgeOne** → **Service Overview** → **Your Project Name**
+5. Navigate to **KV Storage** → **Bind Namespace**
+6. Select `bark-kv` and set binding name to `KV_STORAGE`
+7. Save the binding
+
+#### Step 4: Configure Environment Variables
+
+```bash
+# Generate a secure proxy secret (HIGHLY RECOMMENDED)
 export PROXY_SECRET=$(openssl rand -hex 32)
 
-# Set environment variables
-# APNs Proxy Secret Configuration (recommended)
+# Set proxy secret (highly recommended for security)
 npx edgeone pages env set APNS_PROXY_SECRET "$PROXY_SECRET"
-# Authentication (optional)
-npx edgeone pages env set AUTH_CREDENTIALS "admin:admin123;user1:pass1"
+
+# Optional: Set authentication credentials
+npx edgeone pages env set AUTH_CREDENTIALS "admin:your-secure-password"
+
+# Optional: Set batch push limit
+npx edgeone pages env set MAX_BATCH_PUSH_COUNT "64"
+
+# Optional: Configure custom APNs credentials (only if you have your own)
+# Most users don't need these - default values work for Bark app
+# npx edgeone pages env set APNS_TOPIC "me.fin.bark"
+# npx edgeone pages env set APNS_KEY_ID "YOUR_KEY_ID"
+# npx edgeone pages env set APNS_TEAM_ID "YOUR_TEAM_ID"
+# npx edgeone pages env set APNS_PRIVATE_KEY "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
 ```
 
-#### Using EdgeOne Pages Dashboard
+**Important**: 
+- **APNS_PROXY_SECRET** is highly recommended for securing the proxy endpoint
+- APNs credentials (APNS_TOPIC, APNS_KEY_ID, etc.) are optional - most users don't need them
+- See [docs/en/configuration/env.md](./docs/en/configuration/env.md) for complete documentation
 
-Navigate to your project settings and add the following environment variables:
+#### Step 6: Deploy
 
-#### Optional Variables
+- **GitHub Integration**: Push to your repository to trigger automatic deployment
+- **Direct Upload**: Click **Deploy** and upload your built `dist` folder
 
-```env
-# APNs Proxy Secret Configuration (recommended)
-APNS_PROXY_SECRET=your-shared-secret     # Proxy authentication secret
-
-# Authentication (optional)
-AUTH_CREDENTIALS=admin:admin123;user1:pass1;user2:pass2
-```
-
-**Generate Secure Proxy Secret**:
-```bash
-# Generate a random 32-byte hex string
-openssl rand -hex 32
-```
-
-**Environment Variable Details**: See [ENV.md](./ENV.md) for complete documentation.
-
-### Step 2: Create KV Namespace
-
-1. In EdgeOne Pages dashboard, navigate to **KV Storage**
-2. Create a new KV namespace (e.g., `bark-kv`)
-3. Bind it to your project with the name `KV_STORAGE`
-
-### Step 3: Deploy to EdgeOne Pages
-
-#### Option A: Using EdgeOne CLI
-
-```bash
-# Login to EdgeOne
-npx edgeone login
-
-# Deploy
-npx edgeone pages deploy
-```
-
-#### Option B: Using GitHub Integration
-
-1. Push your code to GitHub
-2. In EdgeOne Pages dashboard, connect your repository
-3. Configure build settings:
-   - **Build Command**: `npm run build`
-   - **Output Directory**: `dist`
-4. Deploy automatically on push
-
-### Step 4: Test Your Deployment
+#### Step 7: Test Your Deployment
 
 ```bash
 # Health check
-curl https://your-domain.com/api/ping
+curl https://your-domain.edgeone.app/api/ping
+
+# Expected response: {"message":"pong"}
 ```
+
+---
+
+### Method 2: Web Dashboard Deployment
+
+#### Step 1: Fork Repository
+
+1. Go to [https://github.com/AkinoKaede/bark-edgeone](https://github.com/AkinoKaede/bark-edgeone)
+2. Click **Fork** button in the top-right corner
+3. Fork the repository to your GitHub account
+
+#### Step 2: Create Project and Connect GitHub
+
+1. Go to [EdgeOne Pages Dashboard](https://console.cloud.tencent.com/edgeone/pages)
+2. Click **Create Project**
+3. Select **GitHub Integration**
+4. Connect your GitHub account (if not already connected)
+5. Select your forked `bark-edgeone` repository
+6. Click **Deploy**
+
+The build configuration is automatically loaded from `edgeone.json` in the repository.
+
+#### Step 3: Create KV Namespace
+
+1. Go to **EdgeOne** → **Service Overview** (default page)
+2. Navigate to **KV Storage** → **Create Namespace**
+3. Name it `bark-kv` (or any name you prefer)
+4. Click **Create**
+
+#### Step 4: Bind KV Namespace
+
+1. Go to **EdgeOne** → **Service Overview** → **Your Project Name**
+2. Navigate to **KV Storage** → **Bind Namespace**
+3. Select `bark-kv` and set binding name to `KV_STORAGE`
+4. Save the binding
+
+#### Step 5: Configure Environment Variables
+
+1. In your project dashboard, navigate to **Settings** → **Environment Variables**
+2. Add the following variables:
+
+**Highly Recommended**:
+```
+APNS_PROXY_SECRET = <generate using: openssl rand -hex 32>
+```
+
+**Optional Variables**:
+```
+AUTH_CREDENTIALS = admin:your-secure-password
+MAX_BATCH_PUSH_COUNT = 64
+```
+
+**Custom APNs Credentials** (only if you have your own - most users don't need these):
+```
+APNS_TOPIC = me.fin.bark
+APNS_KEY_ID = YOUR_KEY_ID
+APNS_TEAM_ID = YOUR_TEAM_ID
+APNS_PRIVATE_KEY = -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+```
+
+3. Click **Save**
+
+**Important**: 
+- **APNS_PROXY_SECRET** is highly recommended for securing the proxy endpoint
+- APNs credentials are optional - default values work for the Bark app
+- See [docs/en/configuration/env.md](./docs/en/configuration/env.md) for complete documentation
+
+#### Step 6: Deploy
+
+Push to your forked repository to trigger automatic deployment.
+
+#### Step 7: Test Your Deployment
+
+1. Go to your project's **Deployments** page
+2. Click on the latest deployment to view the URL
+3. Test the health endpoint:
+
+```bash
+curl https://your-domain.edgeone.app/api/ping
+
+# Expected response: {"message":"pong"}
+```
+
+---
+
+### Post-Deployment Configuration
+
+#### Custom Domain (Optional)
+
+1. In your project page, navigate to **Domain Management**
+2. Click **Add Custom Domain**
+3. Enter your domain name
+4. Configure DNS records as instructed
+5. Wait for SSL certificate provisioning
+
+#### Monitoring and Logs
+
+- **Real-time Logs**: Navigate to **Logs** to view function execution logs
+- **Analytics**: Navigate to **Analytics** to view request metrics
+- **Alerts**: Configure alerts for errors and performance issues
 
 ## Known Issues
 
@@ -158,7 +261,13 @@ bark-edgeone/
 │   ├── handlers/            # Business logic handlers
 │   ├── types/               # TypeScript type definitions
 │   └── utils/               # Helper functions
-├── ENV.md                   # Environment variables guide
+├── docs/                    # Documentation
+│   ├── en/                  # English documentation
+│   │   └── configuration/   # Configuration guides
+│   │       └── env.md       # Environment variables guide
+│   └── zh-cn/               # Chinese documentation
+│       └── configuration/   # Configuration guides
+│           └── env.md       # Environment variables guide
 └── AGENTS.md                # Development guidelines
 ```
 

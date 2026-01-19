@@ -63,15 +63,28 @@ APNS_PROXY_URL=https://proxy-server.com/apns-proxy
 
 **默认值**：空（不校验）
 
+**推荐**：**强烈推荐**在生产环境中设置以保护代理端点
+
 **用途**：
 - Edge Functions 会在请求代理时添加 `x-apns-proxy-auth` 头
 - Node Functions 会验证该头（常数时间比较）
 - 该头不会转发给 Apple
+- 防止未经授权访问您的 APNs 代理
+
+**安全影响**：
+- 不设置此密钥，任何人都可以使用您的代理端点
+- 设置此密钥后，只有带有正确头的请求才能访问代理
 
 **示例**：
 ```env
+# 生成安全密钥
+APNS_PROXY_SECRET=$(openssl rand -hex 32)
+
+# 或手动设置
 APNS_PROXY_SECRET=your-shared-secret
 ```
+
+**最佳实践**：在生产环境中始终设置此项。
 
 ---
 
@@ -116,13 +129,19 @@ ENABLE_APN_PROXY=false
 
 ## APNs 配置
 
+**注意**：这些变量对大多数用户来说是**可选的**。默认值适用于官方 Bark iOS 应用。仅当您有自己的 APNs 凭据时才需要配置这些。
+
 ### APNS_TOPIC
 
 **描述**：APNs Topic（App Bundle ID）
 
 **默认值**：`me.fin.bark`
 
+**必需**：否（默认值适用于 Bark 应用）
+
 **用途**：向 APNs 标识您的 iOS 应用程序。必须与您的应用程序的 Bundle ID 匹配。
+
+**何时自定义**：仅当您使用具有自己 Bundle ID 的自定义 iOS 应用时。
 
 **示例**：
 ```env
@@ -137,7 +156,11 @@ APNS_TOPIC=com.yourcompany.yourapp
 
 **默认值**：`LH4T9V5U4R`
 
+**必需**：否（默认值适用于 Bark 应用）
+
 **用途**：标识用于 APNs 基于令牌的身份验证的认证密钥。
+
+**何时自定义**：仅当您有自己的 APNs 认证密钥时。
 
 **如何获取**：
 1. 前往 Apple Developer Portal
@@ -158,7 +181,11 @@ APNS_KEY_ID=ABC1234DEF
 
 **默认值**：`5U8LBRXG3A`
 
+**必需**：否（默认值适用于 Bark 应用）
+
 **用途**：标识您的 Apple Developer Team 以进行 APNs 身份验证。
+
+**何时自定义**：仅当您有自己的 Apple Developer 账号时。
 
 **如何获取**：
 1. 前往 Apple Developer Portal
@@ -176,9 +203,13 @@ APNS_TEAM_ID=XYZ9876ABC
 
 **描述**：P8 格式的 APNs 私钥
 
-**默认值**：配置中的硬编码密钥（应该被覆盖）
+**默认值**：配置中的硬编码密钥（适用于 Bark 应用）
+
+**必需**：否（默认值适用于 Bark 应用）
 
 **用途**：用于 APNs 基于令牌的身份验证的私钥。
+
+**何时自定义**：仅当您有自己的 APNs 认证密钥时。
 
 **格式**：PEM 格式，换行符转义为 `\n`
 
@@ -201,6 +232,8 @@ APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49Aw
 
 **默认值**：`false`（生产环境）
 
+**必需**：否
+
 **可选值**：
 - `false` - 使用生产 APNs 服务器（`api.push.apple.com`）
 - `true` - 使用沙盒 APNs 服务器（`api.sandbox.push.apple.com`）
@@ -208,6 +241,8 @@ APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49Aw
 **用途**：
 - 使用沙盒进行开发和测试（开发版本）
 - 使用生产环境用于 App Store 和 TestFlight 版本
+
+**何时自定义**：仅当使用自定义应用的开发版本进行测试时。
 
 **示例**：
 ```env
@@ -414,26 +449,26 @@ ENABLE_APN_PROXY=true
 # APNS_PROXY_URL=https://your-domain.com/apns-proxy
 
 # 代理认证密钥（可选）
-# APNS_PROXY_SECRET=your-shared-secret
+APNS_PROXY_SECRET=<使用以下命令生成：openssl rand -hex 32>
 
 # ============================================
-# APNs 配置
+# APNs 配置（可选 - 大多数用户不需要这些）
 # ============================================
 
-# APNs Topic（App Bundle ID）
-APNS_TOPIC=me.fin.bark
+# APNs Topic（App Bundle ID）- 默认值适用于 Bark 应用
+# APNS_TOPIC=me.fin.bark
 
-# APNs Key ID（从 Apple Developer Portal 获取）
-APNS_KEY_ID=LH4T9V5U4R
+# APNs Key ID（从 Apple Developer Portal 获取）- 默认值适用于 Bark 应用
+# APNS_KEY_ID=LH4T9V5U4R
 
-# Apple Developer Team ID
-APNS_TEAM_ID=5U8LBRXG3A
+# Apple Developer Team ID - 默认值适用于 Bark 应用
+# APNS_TEAM_ID=5U8LBRXG3A
 
-# APNs 私钥（P8 格式，换行符为 \n）
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+# APNs 私钥（P8 格式，换行符为 \n）- 默认值适用于 Bark 应用
+# APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 
 # 使用沙盒环境（默认：false）
-APNS_USE_SANDBOX=false
+# APNS_USE_SANDBOX=false
 
 # ============================================
 # 功能开关
@@ -476,11 +511,8 @@ LOG_LEVEL=INFO
 ### 生产环境（推荐）
 
 ```env
-# APNs 配置（必需 - 替换为您的值）
-APNS_TOPIC=com.yourcompany.yourapp
-APNS_KEY_ID=YOUR_KEY_ID
-APNS_TEAM_ID=YOUR_TEAM_ID
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+# 安全（强烈推荐）
+APNS_PROXY_SECRET=<使用以下命令生成：openssl rand -hex 32>
 
 # APNs 代理（使用默认值）
 ENABLE_APN_PROXY=true
@@ -496,19 +528,21 @@ ENABLE_DEVICE_COUNT=false
 # 日志记录
 LOG_LEVEL=INFO
 
-# 安全（可选但推荐）
-AUTH_CREDENTIALS=admin:your-secure-password
+# 认证（可选）
+# AUTH_CREDENTIALS=admin:your-secure-password
+
+# APNs 配置（可选 - 仅当您有自定义凭据时）
+# APNS_TOPIC=com.yourcompany.yourapp
+# APNS_KEY_ID=YOUR_KEY_ID
+# APNS_TEAM_ID=YOUR_TEAM_ID
+# APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 ```
 
 ### 测试/开发环境
 
 ```env
-# APNs 配置（使用沙盒）
-APNS_TOPIC=com.yourcompany.yourapp
-APNS_KEY_ID=YOUR_KEY_ID
-APNS_TEAM_ID=YOUR_TEAM_ID
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
-APNS_USE_SANDBOX=true
+# 安全（强烈推荐）
+APNS_PROXY_SECRET=<使用以下命令生成：openssl rand -hex 32>
 
 # APNs 代理（使用默认值）
 ENABLE_APN_PROXY=true
@@ -523,18 +557,24 @@ ENABLE_DEVICE_COUNT=true
 # 日志记录（调试时详细）
 LOG_LEVEL=DEBUG
 
-# 安全（测试时可选）
+# 认证（测试时可选）
 # AUTH_CREDENTIALS=
+
+# APNs 配置（可选 - 测试自定义应用时使用沙盒）
+# APNS_USE_SANDBOX=true
+# APNS_TOPIC=com.yourcompany.yourapp
+# APNS_KEY_ID=YOUR_KEY_ID
+# APNS_TEAM_ID=YOUR_TEAM_ID
+# APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 ```
 
 ### 最小配置
 
 ```env
-# 仅必需变量（使用所有默认值）
-APNS_TOPIC=com.yourcompany.yourapp
-APNS_KEY_ID=YOUR_KEY_ID
-APNS_TEAM_ID=YOUR_TEAM_ID
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+# 仅设置代理密钥以确保安全（强烈推荐）
+APNS_PROXY_SECRET=<使用以下命令生成：openssl rand -hex 32>
+
+# 其他所有内容使用默认值
 ```
 
 ---

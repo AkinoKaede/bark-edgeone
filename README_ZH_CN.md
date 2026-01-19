@@ -24,78 +24,181 @@ npm install
 
 ## 部署步骤
 
-### 步骤 1: 配置环境变量
+选择您喜欢的部署方式：
 
-你可以使用 EdgeOne CLI 或控制台设置环境变量。
+### 方式 1：命令行部署（推荐）
 
-#### 使用 EdgeOne CLI（推荐）
+#### 步骤 1：登录 EdgeOne
 
 ```bash
-# 生成安全的代理密钥
+# 登录到您的 EdgeOne 账号
+npx edgeone login
+```
+
+这将打开浏览器窗口进行身份验证。
+
+#### 步骤 2：链接项目
+
+```bash
+# 链接到现有项目或创建新项目
+npx edgeone link
+```
+
+输入您的项目名称。如果项目不存在，系统会提示您创建。
+
+#### 步骤 3：创建和绑定 KV 命名空间
+
+KV 命名空间必须通过网页控制台配置：
+
+1. 前往 **EdgeOne** → **服务总览**（默认页面）
+2. 导航到 **KV 存储** → **创建命名空间**
+3. 命名为 `bark-kv`（或您喜欢的任何名称）
+4. 前往 **EdgeOne** → **服务总览** → **您的项目名称**
+5. 导航到 **KV 存储** → **绑定命名空间**
+6. 选择 `bark-kv` 并设置绑定名称为 `KV_STORAGE`
+7. 保存绑定
+
+#### 步骤 4：配置环境变量
+
+```bash
+# 生成安全的代理密钥（强烈推荐）
 export PROXY_SECRET=$(openssl rand -hex 32)
 
-# 设置环境变量
-# APNs 代理密钥配置（推荐）
+# 设置代理密钥（强烈推荐用于安全）
 npx edgeone pages env set APNS_PROXY_SECRET "$PROXY_SECRET"
-# 访问认证（可选）
-npx edgeone pages env set AUTH_CREDENTIALS "admin:admin123;user1:pass1"
+
+# 可选：设置访问认证凭据
+npx edgeone pages env set AUTH_CREDENTIALS "admin:your-secure-password"
+
+# 可选：设置批量推送限制
+npx edgeone pages env set MAX_BATCH_PUSH_COUNT "64"
+
+# 可选：配置自定义 APNs 凭据（仅当您有自己的凭据时）
+# 大多数用户不需要这些 - 默认值适用于 Bark 应用
+# npx edgeone pages env set APNS_TOPIC "me.fin.bark"
+# npx edgeone pages env set APNS_KEY_ID "YOUR_KEY_ID"
+# npx edgeone pages env set APNS_TEAM_ID "YOUR_TEAM_ID"
+# npx edgeone pages env set APNS_PRIVATE_KEY "-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----"
 ```
 
-#### 使用 EdgeOne Pages 控制台
+**重要提示**：
+- **APNS_PROXY_SECRET** 强烈推荐用于保护代理端点
+- APNs 凭据（APNS_TOPIC、APNS_KEY_ID 等）是可选的 - 大多数用户不需要它们
+- 查看 [docs/zh-cn/configuration/env.md](./docs/zh-cn/configuration/env.md) 获取完整文档
 
-进入项目设置并添加以下环境变量：
+#### 步骤 6：部署
 
-#### 可选变量
+- **GitHub 集成**：推送到您的仓库以触发自动部署
+- **直接上传**：点击**部署**并上传您构建的 `dist` 文件夹
 
-```env
-# APNs 代理密钥配置（推荐）
-APNS_PROXY_SECRET=your-shared-secret     # 代理认证密钥
-
-# 访问认证（可选）
-AUTH_CREDENTIALS=admin:admin123;user1:pass1;user2:pass2
-```
-
-**生成安全的代理密钥**：
-```bash
-# 生成随机 32 字节十六进制字符串
-openssl rand -hex 32
-```
-
-**环境变量详细说明**: 查看 [ENV.md](./ENV.md) 获取完整文档。
-
-### 步骤 2: 创建 KV 命名空间
-
-1. 在 EdgeOne Pages 控制台，进入 **KV 存储**
-2. 创建新的 KV 命名空间（例如 `bark-kv`）
-3. 将其绑定到项目，绑定名称为 `KV_STORAGE`
-
-### 步骤 3: 部署到 EdgeOne Pages
-
-#### 方式 A: 使用 EdgeOne CLI
-
-```bash
-# 登录 EdgeOne
-npx edgeone login
-
-# 部署
-npx edgeone pages deploy
-```
-
-#### 方式 B: 使用 GitHub 集成
-
-1. 将代码推送到 GitHub
-2. 在 EdgeOne Pages 控制台连接你的仓库
-3. 配置构建设置：
-   - **构建命令**: `npm run build`
-   - **输出目录**: `dist`
-4. 推送代码后自动部署
-
-### 步骤 4: 测试部署
+#### 步骤 7：测试部署
 
 ```bash
 # 健康检查
-curl https://your-domain.com/api/ping
+curl https://your-domain.edgeone.app/api/ping
+
+# 预期响应：{"message":"pong"}
 ```
+
+---
+
+### 方式 2：网页控制台部署
+
+#### 步骤 1：Fork 仓库
+
+1. 前往 [https://github.com/AkinoKaede/bark-edgeone](https://github.com/AkinoKaede/bark-edgeone)
+2. 点击右上角的 **Fork** 按钮
+3. 将仓库 Fork 到您的 GitHub 账号
+
+#### 步骤 2：创建项目并连接 GitHub
+
+1. 前往 [EdgeOne Pages 控制台](https://console.cloud.tencent.com/edgeone/pages)
+2. 点击**创建项目**
+3. 选择 **GitHub 集成**
+4. 连接您的 GitHub 账号（如果尚未连接）
+5. 选择您 Fork 的 `bark-edgeone` 仓库
+6. 点击**部署**
+
+构建配置将自动从仓库中的 `edgeone.json` 加载。
+
+#### 步骤 3：创建 KV 命名空间
+
+1. 前往 **EdgeOne** → **服务总览**（默认页面）
+2. 导航到 **KV 存储** → **创建命名空间**
+3. 命名为 `bark-kv`（或您喜欢的任何名称）
+4. 点击**创建**
+
+#### 步骤 4：绑定 KV 命名空间
+
+1. 前往 **EdgeOne** → **服务总览** → **您的项目名称**
+2. 导航到 **KV 存储** → **绑定命名空间**
+3. 选择 `bark-kv` 并设置绑定名称为 `KV_STORAGE`
+4. 保存绑定
+
+#### 步骤 5：配置环境变量
+
+1. 在项目控制台，导航到**设置** → **环境变量**
+2. 添加以下变量：
+
+**强烈推荐**：
+```
+APNS_PROXY_SECRET = <使用以下命令生成：openssl rand -hex 32>
+```
+
+**可选变量**：
+```
+AUTH_CREDENTIALS = admin:your-secure-password
+MAX_BATCH_PUSH_COUNT = 64
+```
+
+**自定义 APNs 凭据**（仅当您有自己的凭据时 - 大多数用户不需要）：
+```
+APNS_TOPIC = me.fin.bark
+APNS_KEY_ID = YOUR_KEY_ID
+APNS_TEAM_ID = YOUR_TEAM_ID
+APNS_PRIVATE_KEY = -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+```
+
+3. 点击**保存**
+
+**重要提示**：
+- **APNS_PROXY_SECRET** 强烈推荐用于保护代理端点
+- APNs 凭据是可选的 - 默认值适用于 Bark 应用
+- 查看 [docs/zh-cn/configuration/env.md](./docs/zh-cn/configuration/env.md) 获取完整文档
+
+#### 步骤 6：部署
+
+推送到您 Fork 的仓库以触发自动部署。
+
+#### 步骤 7：测试部署
+
+1. 前往项目的**部署**页面
+2. 点击最新的部署以查看 URL
+3. 测试健康检查端点：
+
+```bash
+curl https://your-domain.edgeone.app/api/ping
+
+# 预期响应：{"message":"pong"}
+```
+
+---
+
+### 部署后配置
+
+#### 自定义域名（可选）
+
+1. 在项目页面，导航到**域名管理**
+2. 点击**添加自定义域名**
+3. 输入您的域名
+4. 按照说明配置 DNS 记录
+5. 等待 SSL 证书配置完成
+
+#### 监控和日志
+
+- **实时日志**：导航到**日志**查看函数执行日志
+- **分析**：导航到**分析**查看请求指标
+- **告警**：配置错误和性能问题的告警
 
 ## 已知问题
 
@@ -152,7 +255,13 @@ bark-edgeone/
 │   ├── handlers/            # 业务逻辑处理器
 │   ├── types/               # TypeScript 类型定义
 │   └── utils/               # 辅助函数
-├── ENV.md                   # 环境变量指南
+├── docs/                    # 文档
+│   ├── en/                  # 英文文档
+│   │   └── configuration/   # 配置指南
+│   │       └── env.md       # 环境变量指南
+│   └── zh-cn/               # 中文文档
+│       └── configuration/   # 配置指南
+│           └── env.md       # 环境变量指南
 └── AGENTS.md                # 开发指南
 ```
 

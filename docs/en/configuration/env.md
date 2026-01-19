@@ -63,15 +63,28 @@ APNS_PROXY_URL=https://proxy-server.com/apns-proxy
 
 **Default**: Empty (no validation)
 
+**Recommendation**: **Highly recommended** for production deployments to secure the proxy endpoint
+
 **Purpose**:
 - Edge Functions add `x-apns-proxy-auth` header when requesting proxy
 - Node Functions validate this header (constant-time comparison)
 - This header is not forwarded to Apple
+- Prevents unauthorized access to your APNs proxy
+
+**Security Impact**:
+- Without this secret, anyone can use your proxy endpoint
+- With this secret, only requests with the correct header can access the proxy
 
 **Example**:
 ```env
+# Generate a secure secret
+APNS_PROXY_SECRET=$(openssl rand -hex 32)
+
+# Or set manually
 APNS_PROXY_SECRET=your-shared-secret
 ```
+
+**Best Practice**: Always set this in production environments.
 
 ---
 
@@ -116,13 +129,19 @@ ENABLE_APN_PROXY=false
 
 ## APNs Configuration
 
+**Note**: These variables are **optional** for most users. The default values work with the official Bark iOS app. Only configure these if you have your own APNs credentials.
+
 ### APNS_TOPIC
 
 **Description**: APNs Topic (App Bundle ID)
 
 **Default**: `me.fin.bark`
 
+**Required**: No (default works for Bark app)
+
 **Purpose**: Identifies your iOS application to APNs. Must match your app's Bundle ID.
+
+**When to customize**: Only if you're using a custom iOS app with your own Bundle ID.
 
 **Example**:
 ```env
@@ -137,7 +156,11 @@ APNS_TOPIC=com.yourcompany.yourapp
 
 **Default**: `LH4T9V5U4R`
 
+**Required**: No (default works for Bark app)
+
 **Purpose**: Identifies the authentication key used for APNs token-based authentication.
+
+**When to customize**: Only if you have your own APNs authentication key.
 
 **How to obtain**:
 1. Go to Apple Developer Portal
@@ -158,7 +181,11 @@ APNS_KEY_ID=ABC1234DEF
 
 **Default**: `5U8LBRXG3A`
 
+**Required**: No (default works for Bark app)
+
 **Purpose**: Identifies your Apple Developer Team for APNs authentication.
+
+**When to customize**: Only if you have your own Apple Developer account.
 
 **How to obtain**:
 1. Go to Apple Developer Portal
@@ -176,9 +203,13 @@ APNS_TEAM_ID=XYZ9876ABC
 
 **Description**: APNs Private Key in P8 format
 
-**Default**: Hardcoded key in config (should be overridden)
+**Default**: Hardcoded key in config (works for Bark app)
+
+**Required**: No (default works for Bark app)
 
 **Purpose**: Private key for APNs token-based authentication.
+
+**When to customize**: Only if you have your own APNs authentication key.
 
 **Format**: PEM format with newlines escaped as `\n`
 
@@ -201,6 +232,8 @@ APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49Aw
 
 **Default**: `false` (production)
 
+**Required**: No
+
 **Options**:
 - `false` - Use production APNs server (`api.push.apple.com`)
 - `true` - Use sandbox APNs server (`api.sandbox.push.apple.com`)
@@ -208,6 +241,8 @@ APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\nMIGTAgEAMBMGByqGSM49AgEGCCqGSM49Aw
 **Purpose**: 
 - Use sandbox for development and testing with development builds
 - Use production for App Store and TestFlight builds
+
+**When to customize**: Only when testing with development builds of your custom app.
 
 **Example**:
 ```env
@@ -414,26 +449,26 @@ ENABLE_APN_PROXY=true
 # APNS_PROXY_URL=https://your-domain.com/apns-proxy
 
 # Proxy authentication secret (optional)
-# APNS_PROXY_SECRET=your-shared-secret
+APNS_PROXY_SECRET=<generate using: openssl rand -hex 32>
 
 # ============================================
-# APNs Configuration
+# APNs Configuration (Optional - most users don't need these)
 # ============================================
 
-# APNs Topic (App Bundle ID)
-APNS_TOPIC=me.fin.bark
+# APNs Topic (App Bundle ID) - default works for Bark app
+# APNS_TOPIC=me.fin.bark
 
-# APNs Key ID (from Apple Developer Portal)
-APNS_KEY_ID=LH4T9V5U4R
+# APNs Key ID (from Apple Developer Portal) - default works for Bark app
+# APNS_KEY_ID=LH4T9V5U4R
 
-# Apple Developer Team ID
-APNS_TEAM_ID=5U8LBRXG3A
+# Apple Developer Team ID - default works for Bark app
+# APNS_TEAM_ID=5U8LBRXG3A
 
-# APNs Private Key (P8 format, newlines as \n)
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+# APNs Private Key (P8 format, newlines as \n) - default works for Bark app
+# APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 
 # Use sandbox environment (default: false)
-APNS_USE_SANDBOX=false
+# APNS_USE_SANDBOX=false
 
 # ============================================
 # Feature Flags
@@ -476,11 +511,8 @@ LOG_LEVEL=INFO
 ### Production Environment (Recommended)
 
 ```env
-# APNs Configuration (required - replace with your values)
-APNS_TOPIC=com.yourcompany.yourapp
-APNS_KEY_ID=YOUR_KEY_ID
-APNS_TEAM_ID=YOUR_TEAM_ID
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+# Security (highly recommended)
+APNS_PROXY_SECRET=<generate using: openssl rand -hex 32>
 
 # APNs Proxy (use defaults)
 ENABLE_APN_PROXY=true
@@ -496,19 +528,21 @@ ENABLE_DEVICE_COUNT=false
 # Logging
 LOG_LEVEL=INFO
 
-# Security (optional but recommended)
-AUTH_CREDENTIALS=admin:your-secure-password
+# Authentication (optional)
+# AUTH_CREDENTIALS=admin:your-secure-password
+
+# APNs Configuration (optional - only if you have custom credentials)
+# APNS_TOPIC=com.yourcompany.yourapp
+# APNS_KEY_ID=YOUR_KEY_ID
+# APNS_TEAM_ID=YOUR_TEAM_ID
+# APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 ```
 
 ### Testing/Development Environment
 
 ```env
-# APNs Configuration (use sandbox)
-APNS_TOPIC=com.yourcompany.yourapp
-APNS_KEY_ID=YOUR_KEY_ID
-APNS_TEAM_ID=YOUR_TEAM_ID
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
-APNS_USE_SANDBOX=true
+# Security (highly recommended)
+APNS_PROXY_SECRET=<generate using: openssl rand -hex 32>
 
 # APNs Proxy (use defaults)
 ENABLE_APN_PROXY=true
@@ -523,18 +557,24 @@ ENABLE_DEVICE_COUNT=true
 # Logging (verbose for debugging)
 LOG_LEVEL=DEBUG
 
-# Security (optional for testing)
+# Authentication (optional for testing)
 # AUTH_CREDENTIALS=
+
+# APNs Configuration (optional - use sandbox if testing custom app)
+# APNS_USE_SANDBOX=true
+# APNS_TOPIC=com.yourcompany.yourapp
+# APNS_KEY_ID=YOUR_KEY_ID
+# APNS_TEAM_ID=YOUR_TEAM_ID
+# APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 ```
 
 ### Minimal Configuration
 
 ```env
-# Only required variables (uses all defaults)
-APNS_TOPIC=com.yourcompany.yourapp
-APNS_KEY_ID=YOUR_KEY_ID
-APNS_TEAM_ID=YOUR_TEAM_ID
-APNS_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
+# Only set proxy secret for security (highly recommended)
+APNS_PROXY_SECRET=<generate using: openssl rand -hex 32>
+
+# Everything else uses defaults
 ```
 
 ---
