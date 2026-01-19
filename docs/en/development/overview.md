@@ -254,7 +254,7 @@ APNS_PROXY_SECRET="your-secret-key"
 ```
 
 **Implementation:**
-- Proxy client sends secret in `X-Proxy-Secret` header
+- Proxy client sends secret in `X-Apns-Proxy-Auth` header
 - Node Functions validate secret before forwarding requests
 
 ## API Compatibility
