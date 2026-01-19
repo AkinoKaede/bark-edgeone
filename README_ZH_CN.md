@@ -95,7 +95,7 @@ npx edgeone pages deploy
 
 ```bash
 # 健康检查
-curl https://your-domain.edgeone.app/api/ping
+curl https://your-domain.edgeone.cool/api/ping
 
 # 预期响应：{"message":"pong"}
 ```
@@ -177,7 +177,7 @@ APNS_PRIVATE_KEY = -----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----
 3. 测试健康检查端点：
 
 ```bash
-curl https://your-domain.edgeone.app/api/healthz
+curl https://your-domain.edgeone.cool/api/healthz
 
 # 预期响应：ok
 ```

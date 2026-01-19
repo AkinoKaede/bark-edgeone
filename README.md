@@ -95,7 +95,7 @@ npx edgeone pages deploy
 
 ```bash
 # Health check
-curl https://your-domain.edgeone.app/api/healthz
+curl https://your-domain.edgeone.cool/api/healthz
 
 # Expected response: ok
 ```
@@ -177,7 +177,7 @@ Push to your forked repository to trigger automatic deployment.
 3. Test the health endpoint:
 
 ```bash
-curl https://your-domain.edgeone.app/api/healthz
+curl https://your-domain.edgeone.cool/api/healthz
 
 # Expected response: ok
 ```

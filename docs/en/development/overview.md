@@ -270,7 +270,7 @@ GET/POST /:device_key
 
 **Example:**
 ```bash
-curl "https://your-domain.edgeone.app/api/abc123/Hello/World"
+curl "https://your-domain.edgeone.cool/api/abc123/Hello/World"
 ```
 
 **Parameters:**
@@ -287,7 +287,7 @@ POST /api/push
 
 **Example:**
 ```bash
-curl -X POST https://your-domain.edgeone.app/api/push \
+curl -X POST https://your-domain.edgeone.cool/api/push \
   -H "Content-Type: application/json" \
   -d '{
     "device_key": "abc123",
@@ -299,7 +299,7 @@ curl -X POST https://your-domain.edgeone.app/api/push \
 
 **Batch Push:**
 ```bash
-curl -X POST https://your-domain.edgeone.app/api/push \
+curl -X POST https://your-domain.edgeone.cool/api/push \
   -H "Content-Type: application/json" \
   -d '{
     "device_keys": ["key1", "key2", "key3"],
