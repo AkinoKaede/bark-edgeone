@@ -27,18 +27,18 @@ export function validateDeviceToken(token?: string): ValidationResult {
 
 /**
  * Validate push parameters
+ *
+ * Note: bark-server allows empty body/title for encrypted push notifications.
+ * The handler will set "Empty Message" as body if all alert fields are empty.
  */
 export function validatePushParams(params: PushParams): { valid: boolean; error?: string } {
-  // Device key is required
+  // Device key is required (either single or batch)
   if (!params.device_key && (!params.device_keys || params.device_keys.length === 0)) {
-    return { valid: false, error: 'device_key or device_keys is required' };
+    return { valid: false, error: 'device key is empty' };
   }
 
-  // At least body should be present for meaningful notification
-  // (title and subtitle are optional)
-  if (!params.body && !params.title && !params.ciphertext) {
-    return { valid: false, error: 'body, title, or ciphertext is required' };
-  }
+  // Note: Empty body/title is allowed - handler will set default "Empty Message"
+  // This is compatible with bark-server behavior for encrypted notifications
 
   return { valid: true };
 }

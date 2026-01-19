@@ -1,20 +1,27 @@
 /**
+ * APNs APS payload structure
+ */
+export interface APNsAPS {
+  alert?: {
+    title?: string;
+    subtitle?: string;
+    body?: string;
+  };
+  sound?: string;
+  badge?: number;
+  'thread-id'?: string;
+  category?: string;
+  'mutable-content'?: number;
+  'content-available'?: number;
+  'interruption-level'?: 'passive' | 'active' | 'time-sensitive' | 'critical';
+  'relevance-score'?: number;
+}
+
+/**
  * APNs notification payload
  */
 export interface APNsPayload {
-  aps: {
-    alert?: {
-      title?: string;
-      subtitle?: string;
-      body?: string;
-    };
-    sound?: string;
-    badge?: number;
-    'thread-id'?: string;
-    category?: string;
-    'mutable-content'?: number;
-    'content-available'?: number;
-  };
+  aps: APNsAPS;
   [key: string]: any;
 }
 

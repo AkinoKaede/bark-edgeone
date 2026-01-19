@@ -693,11 +693,11 @@ edgeone pages deploy
 6. ✅ Health check endpoints
 
 ### Should-Have
-1. ⏳ Batch push support
-2. ⏳ V1 API compatibility (URL path params)
+1. ✅ Batch push support
+2. ✅ V1 API compatibility (URL path params)
 3. ⏳ Basic authentication
 4. ⏳ Environment variable fallback database
-5. ⏳ Request validation
+5. ✅ Request validation
 
 ### Nice-to-Have
 1. ⏺ Rate limiting
@@ -753,21 +753,21 @@ edgeone pages deploy
 
 ## Migration Checklist
 
-- [ ] Set up project structure
-- [ ] Implement KV database interface
-- [ ] Implement APNs client with JWT
-- [ ] Create push endpoint handler (V2 API)
-- [ ] Create register endpoint handler
-- [ ] Add health check endpoints
-- [ ] Implement request parsing utilities
-- [ ] Add response helpers
-- [ ] Configure environment variables
-- [ ] Set up KV namespace binding
-- [ ] Test locally with EdgeOne CLI
-- [ ] Deploy to EdgeOne Pages
+- [x] Set up project structure
+- [x] Implement KV database interface
+- [x] Implement APNs client with JWT
+- [x] Create push endpoint handler (V2 API)
+- [x] Create register endpoint handler
+- [x] Add health check endpoints
+- [x] Implement request parsing utilities
+- [x] Add response helpers
+- [x] Configure environment variables
+- [x] Set up KV namespace binding
+- [x] Test locally with EdgeOne CLI
+- [x] Deploy to EdgeOne Pages
 - [ ] Test with real APNs credentials
-- [ ] Add V1 API compatibility (optional)
-- [ ] Add batch push support (optional)
+- [x] Add V1 API compatibility
+- [x] Add batch push support
 - [ ] Add authentication (optional)
 - [ ] Set up monitoring and logging
 

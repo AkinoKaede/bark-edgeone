@@ -131,18 +131,23 @@ export async function countDevices(): Promise<number> {
 
   try {
     let count = 0;
-    let cursor: string = "";
+    let cursor: string | undefined = undefined;
 
     // List all keys with device: prefix
     do {
-      const result = await KV_STORAGE.list({
+      let options : any = {
         prefix: KV_PREFIXES.DEVICE,
-        limit: 256, // EdgeOne KV list limit
-        cursor: cursor,
-      });
+        limit: 256,
+      };
+
+      if (cursor) {
+        options.cursor = cursor as string;
+      }
+
+      const result = await KV_STORAGE.list(options);
 
       count += result.keys.length;
-      cursor = result.complete ? "" : result.cursor;
+      cursor = result.complete ? undefined : result.cursor;
     } while (cursor);
 
     return count;

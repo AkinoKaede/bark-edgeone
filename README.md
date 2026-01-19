@@ -147,6 +147,49 @@ Content-Type: application/json
 }
 ```
 
+#### V1 API (URL Path)
+
+For backward compatibility with the original Bark server:
+
+```bash
+# Simple push with body only
+GET /:device_key/:body
+
+# Push with title and body
+GET /:device_key/:title/:body
+
+# Push with title, subtitle, and body
+GET /:device_key/:title/:subtitle/:body
+
+# With query parameters
+GET /:device_key?title=Hello&body=World&sound=default
+
+# POST with form data
+POST /:device_key
+Content-Type: application/x-www-form-urlencoded
+
+title=Hello&body=World&sound=default
+```
+
+### Push Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `device_key` | string | Required - Device identifier |
+| `device_keys` | array | For batch push (V2 only) |
+| `title` | string | Notification title |
+| `subtitle` | string | Notification subtitle |
+| `body` | string | Notification content |
+| `sound` | string | Sound file name (auto-appends .caf) |
+| `badge` | number | App icon badge number |
+| `icon` | string | Custom icon URL (iOS 15+) |
+| `group` | string | Thread ID for grouping |
+| `url` | string | URL to open on tap |
+| `level` | string | active/timeSensitive/passive/critical |
+| `call` | string | "1" for 30-second ringtone |
+| `isArchive` | string | "1" to archive notification |
+| `ciphertext` | string | Encrypted content |
+
 ### Health Checks
 
 ```bash
