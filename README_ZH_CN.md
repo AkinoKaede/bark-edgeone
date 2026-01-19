@@ -275,7 +275,7 @@ bark-edgeone/
 
 ## 贡献
 
-欢迎贡献！请阅读 [AGENTS.md](./AGENTS.md) 了解开发指南。
+欢迎贡献！请阅读 [开发总览](./docs/en//development/overview.md) 了解开发指南。
 
 ## 许可证
 

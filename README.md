@@ -281,7 +281,7 @@ bark-edgeone/
 
 ## Contributing
 
-Contributions are welcome! Please read [AGENTS.md](./AGENTS.md) for development guidelines.
+Contributions are welcome! Please read [Development Overview](./docs/en//development/overview.md) for development guidelines.
 
 ## License
 
