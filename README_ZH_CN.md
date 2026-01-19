@@ -196,6 +196,20 @@ curl https://your-domain.edgeone.app/api/healthz
 
 ## 已知问题
 
+### EdgeOne Pages KV 最终一致性
+
+**问题**：EdgeOne Pages KV 存储只保证最终一致性。设备注册后，设备令牌可能需要一段时间才能用于推送通知。
+
+**影响**：
+- 典型延迟：几秒钟
+- 最大延迟：最长 1 小时（极少数情况）
+- 在此期间，向新注册设备发送的推送通知可能会失败
+
+**解决方法**：
+- 注册后等待几秒钟再发送第一条推送通知
+- 在客户端应用中实现重试逻辑
+- 这是平台限制，无法避免
+
 ### HTTP/2 代理需求
 
 **问题**：EdgeOne Edge Functions Runtime 目前的 `fetch` API 不支持 HTTP/2，而 Apple Push Notification service (APNs) 需要 HTTP/2。

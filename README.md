@@ -196,6 +196,20 @@ curl https://your-domain.edgeone.app/api/ping
 
 ## Known Issues
 
+### EdgeOne Pages KV Eventual Consistency
+
+**Issue**: EdgeOne Pages KV storage only guarantees eventual consistency. After device registration, there may be a delay before the device token becomes available for push notifications.
+
+**Impact**:
+- Typical delay: A few seconds
+- Maximum delay: Up to 1 hour (in rare cases)
+- During this period, push notifications to newly registered devices may fail
+
+**Workaround**:
+- Wait a few seconds after registration before sending the first push notification
+- Implement retry logic in your client applications
+- This is a platform limitation and cannot be avoided
+
 ### HTTP/2 Proxy Requirement
 
 **Issue**: EdgeOne Edge Functions Runtime currently does not support HTTP/2 in the `fetch` API, which is required by Apple Push Notification service (APNs).
